@@ -21,8 +21,8 @@ def get_users_choice():
     print("Let me know what you want to do")
     print("by writing add, find or browse\n")
 
-    choice = input('Enter your choice here: \n')
-    verify_users_choice(choice)
+    return input('Enter your choice here: \n')
+    
 
 
 def verify_users_choice(users_choice):
@@ -37,11 +37,50 @@ def verify_users_choice(users_choice):
         
     except ValueError:
         print(f'Invalid input: {users_choice}. Try again!\n')
-        get_users_choice()       
+        get_users_choice()      
 
-def run():
+
+
+def run_users_choice(choice):
+    """
+    Starts functions according to users choice
+    """
+    if choice == 'add':            
+        add_recipe()
+    elif  choice == 'find':
+        find_recipe()
+    elif  choice == 'browse':
+        browse_recipes() 
+
+def add_recipe():
+    """
+    Creates new recipe
+    """
+    print('You choose to add a recipe.\n')
+    print('Function is not yet implemented')
+
+def find_recipe():
+    """
+    Finds a recipe within one category
+    """
+    print('You choose to find a recipe.')
+
+def browse_recipes():
+    """
+    Displays recipes within one category
+    """
+    print('You choose to browse recipes.')
+
+# def ():
+#     """
+#     """
+def main():
+    """
+    Run all program functions
+    """
     print("Welcome to Recipe Book!\n")
-    get_users_choice()
+    choice = get_users_choice()
+    verify_users_choice(choice)
+    run_users_choice(choice.lower())
 
-
-run()
+main()
