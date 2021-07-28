@@ -56,7 +56,9 @@ def add_recipe():
     Creates new recipe
     """
     new_recipe = recipe_input()
-    new_recipe.recipe_print()
+    valid_recipe = validate_recipe(new_recipe)
+    valid_recipe.recipe_print()
+
 
 def recipe_input():
     """
@@ -66,19 +68,19 @@ def recipe_input():
     print("Let's start with the title\n")
     title = input('Enter your recipes title\n')
     print('What kind of recipe is it?')
-    kind = input('Choose recipes type: cake\salad\dinner\n')
+    kind = input('Choose recipes type: main course/dessert/starter\n')
     portions = input('How many portions is this recipe for\n')
     print(f'Lets prepare ingredients list for {title}')
     add_ingredients = True
     ingredients = []
     while add_ingredients:
         ingredient = input('Enter ingredient name\n')
-        amount = input('Enter the amount\n')
+        amount = input('Enter the amount (use numbers)\n')
         unit = input('Enter unit: g, ml, cup, pinch, click enter if not applicable\n')
         ingredients.append([ingredient, amount, unit])
         if input("do you want to add another ingredient? Choose Y/N\n").lower() == 'n':
             add_ingredients = False
-    print('Great! What should we do with this ingredients?')
+    print('Great! What should we do with this ingredients?\n')
     to_do = input('Please enter the recipe.\n')
     return  recipe(kind, portions, title, ingredients, to_do)
     
@@ -104,9 +106,38 @@ class recipe:
             print(f'{self.ingredients[i][1]}{self.ingredients[i][2]} {self.ingredients[i][0]}')
         print(f'\n {self.to_do}')
 
-def validate_recipe():
+def validate_recipe(recipe):
     """
+    Validates recipe kind, portions and amount input fields.
+    Allows user to correct the errors.
     """
+    try: 
+        if recipe.kind.lower() in ['main course', 'dessert', 'starter']:
+            pass
+        else:
+            raise ValueError
+    except ValueError:
+        print(f'Incorrect type of recipe: {recipe.kind}.')
+        recipe.kind = input('Choose correct rexipe type main course, dessert, starter:\n')
+        validate_recipe(recipe)
+
+    try:
+        int(recipe.portions)
+    except:
+        print(f'Incorrect portion number: {recipe.portions}.')
+        recipe.portions = input('Enter number of portions:\n')
+        validate_recipe(recipe)
+    
+    try:
+        for i in range(0, len(recipe.ingredients)):
+            float(recipe.ingredients[i][1])
+    except ValueError as e:
+        print("One of the ingredients has wrong amount. Please reenter the the amounts!\n")
+        for i in range(0, len(recipe.ingredients)):
+            recipe.ingredients[i][1] = input(f'Input amount of {recipe.ingredients[i][0]} (unit: {recipe.ingredients[i][2]})\n')
+        validate_recipe(recipe)
+    
+    return recipe
 
 
 def find_recipe():
