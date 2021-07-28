@@ -58,7 +58,9 @@ def add_recipe():
     new_recipe = recipe_input()
     valid_recipe = validate_recipe(new_recipe)
     valid_recipe.recipe_print()
-    save = save_recipe()
+    if save_recipe():
+        recipe = calculate_1portion(valid_recipe)
+
 
 
 def recipe_input():
@@ -156,6 +158,17 @@ def save_recipe():
     except ValueError:
         print(f'Invalid input: {users_choice}. Answer Y for yes or N for no')
         save_recipe()
+    return True
+
+def calculate_1portion(recipe):
+    """
+    Calculate the amount of ingredients per one portion
+    """
+    for i in range(0, len(recipe.ingredients)):
+            recipe.ingredients[i][1] = float(recipe.ingredients[i][1]) / int(recipe.portions)
+    recipe.portions = 1
+    return recipe
+
 
 def find_recipe():
     """
