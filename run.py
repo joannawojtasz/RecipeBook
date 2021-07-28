@@ -18,13 +18,29 @@ def get_users_choice():
     """
     Ask user what they want to do
     """
-    print("Let me know what you want to do!")
-    print("Write add, find or browse\n")
+    print("Let me know what you want to do")
+    print("by writing add, find or browse\n")
 
-    users_choice = input('Enter your choice here: \n')
-    print(f"You want to {users_choice} recipe")
+    choice = input('Enter your choice here: \n')
+    verify_users_choice(choice)
+
+
+def verify_users_choice(users_choice):
+    """
+    Verifies if users choice is valid
+    """
+    try:
+        if users_choice.lower() in ['add', 'find', 'browse']:
+            pass
+        else:
+            raise ValueError
+        
+    except ValueError:
+        print(f'Invalid input: {users_choice}. Try again!\n')
+        get_users_choice()       
 
 def run():
+    print("Welcome to Recipe Book!\n")
     get_users_choice()
 
 
