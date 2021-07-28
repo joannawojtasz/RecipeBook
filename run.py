@@ -25,7 +25,6 @@ def get_users_choice():
     return input('Enter your choice here: \n')
     
 
-
 def verify_users_choice(users_choice):
     """
     Verifies if users choice is valid
@@ -39,7 +38,6 @@ def verify_users_choice(users_choice):
     except ValueError:
         print(f'Invalid input: {users_choice}. Try again!\n')
         get_users_choice()      
-
 
 
 def run_users_choice(choice):
@@ -57,7 +55,8 @@ def add_recipe():
     """
     Creates new recipe
     """
-    recipe_input()
+    new_recipe = recipe_input()
+    new_recipe.recipe_print()
 
 def recipe_input():
     """
@@ -69,7 +68,7 @@ def recipe_input():
     print('What kind of recipe is it?')
     kind = input('Choose recipes type: cake\salad\dinner\n')
     portions = input('How many portions is this recipe for\n')
-    print(f'Lets prepare ingredeients list for {title}')
+    print(f'Lets prepare ingredients list for {title}')
     add_ingredients = True
     ingredients = []
     while add_ingredients:
@@ -81,6 +80,33 @@ def recipe_input():
             add_ingredients = False
     print('Great! What should we do with this ingredients?')
     to_do = input('Please enter the recipe.\n')
+    return  recipe(kind, portions, title, ingredients, to_do)
+    
+
+class recipe:
+    """
+    Recipe class
+    """
+    def __init__ (self, kind, portions, title, ingredients, to_do):
+        self.kind = kind
+        self.portions = portions
+        self.title = title
+        self.ingredients = ingredients
+        self.to_do = to_do
+
+    def recipe_print(self):
+        """
+        print new recipe to the terminal
+        """
+        print(f'\nYour recipe for {self.portions} portions of {self.kind}:\n')
+        print(f'{self.title}\n ------------------------')
+        for i in range(0, len(self.ingredients)):
+            print(f'{self.ingredients[i][1]}{self.ingredients[i][2]} {self.ingredients[i][0]}')
+        print(f'\n {self.to_do}')
+
+def validate_recipe():
+    """
+    """
 
 
 def find_recipe():
