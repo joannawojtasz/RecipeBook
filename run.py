@@ -12,8 +12,20 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
 
-cakes = SHEET.worksheet('cakes')
+# cakes = SHEET.worksheet('cakes')
 
-data = cakes.get_all_values()
+def get_users_choice():
+    """
+    Ask user what they want to do
+    """
+    print("Let me know what you want to do!")
+    print("Write add, find or browse\n")
 
-print(data)
+    users_choice = input('Enter your choice here: \n')
+    print(f"You want to {users_choice} recipe")
+
+def run():
+    get_users_choice()
+
+
+run()
