@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -56,8 +57,31 @@ def add_recipe():
     """
     Creates new recipe
     """
-    print('You choose to add a recipe.\n')
-    print('Function is not yet implemented')
+    recipe_input()
+
+def recipe_input():
+    """
+    Collects recipe input from the user
+    """
+    print('You choose to add a recipe.')
+    print("Let's start with the title\n")
+    title = input('Enter your recipes title\n')
+    print('What kind of recipe is it?')
+    kind = input('Choose recipes type: cake\salad\dinner\n')
+    portions = input('How many portions is this recipe for\n')
+    print(f'Lets prepare ingredeients list for {title}')
+    add_ingredients = True
+    ingredients = []
+    while add_ingredients:
+        ingredient = input('Enter ingredient name\n')
+        amount = input('Enter the amount\n')
+        unit = input('Enter unit: g, ml, cup, pinch, click enter if not applicable\n')
+        ingredients.append([ingredient, amount, unit])
+        if input("do you want to add another ingredient? Choose Y/N\n").lower() == 'n':
+            add_ingredients = False
+    print('Great! What should we do with this ingredients?')
+    to_do = input('Please enter the recipe.\n')
+
 
 def find_recipe():
     """
