@@ -58,6 +58,7 @@ def add_recipe():
     new_recipe = recipe_input()
     valid_recipe = validate_recipe(new_recipe)
     valid_recipe.recipe_print()
+    save = save_recipe()
 
 
 def recipe_input():
@@ -139,6 +140,22 @@ def validate_recipe(recipe):
     
     return recipe
 
+def save_recipe():
+    """
+    Asks user to validate recipe
+    """
+    save = input('Do you want to save the recipe? Answer Y / N\n')
+    try:
+        if save.lower() in ['y', 'yes']:
+            pass
+        elif save.lower() in ['n', 'no']:
+            print('Please try again!\n')
+            add_recipe()
+        else:
+            raise ValueError
+    except ValueError:
+        print(f'Invalid input: {users_choice}. Answer Y for yes or N for no')
+        save_recipe()
 
 def find_recipe():
     """
