@@ -15,6 +15,9 @@ SHEET = GSPREAD_CLIENT.open('Recipe_Book')
 COMMANDS = ['add', 'find', 'browse']
 
 def show_command():
+    """
+    show initial commands
+    """
     choice = get_user_choice()
     verify_user_choice(choice)
     run_user_choice(choice.lower())
@@ -105,11 +108,12 @@ class Recipe:
         """
         print new recipe to the terminal
         """
-        print(f'\nYour recipe for {self.portions} portions of {self.kind}:\n')
+        print(f'\nYour recipe for {self.portions} portions of {self.title} ({self.kind}):\n')
         print(f'{self.title}\n ------------------------')
         for i in range(0, len(self.ingredients)):
             print(f'{self.ingredients[i][1]}{self.ingredients[i][2]} {self.ingredients[i][0]}')
-        print(f'\n {self.instructions}')
+        print(f'\n {self.instructions} \n')
+
 
     def prepare_data(self):
         """
@@ -203,16 +207,25 @@ def find_recipe():
     print_found_recipe(category, portions, recipe)
 
 def get_category():
+    """
+    gets and verifies user input returns chosen category
+    """
     category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
     category = validate_category(category)
     return category
 
 def get_recipe(category):
+    """
+    gets and verifies user input returns chosen recipe title to look for
+    """
     recipe = input('Enter name of the recipe you are looking for:\n')
     recipe_details = look_for_recipe(recipe, category)
     return recipe_details
 
 def get_portions():
+    """
+    gets and verifies user input, returns chosen number of portions
+    """
     portions = input('\nHow many portions do you want to prepare:\n')
     try:
         #Parse to int
@@ -222,7 +235,6 @@ def get_portions():
         portions = input('Enter number of portions:\n')
         get_portions()
     return portions
-
 
 def validate_category(category):
     """
@@ -259,6 +271,9 @@ def look_for_recipe(recipe, category):
          find_recipe()  
     
 def print_found_recipe(category, portions, data):
+    """
+    imports data and prints the found recipe
+    """
     ingredients = data[2].split(";")
     ingredients_lst = []
 
@@ -287,7 +302,6 @@ def browse_recipes():
     recipes_to_preview = get_recipes_to_preview(recipes)
     portions = get_portions()
     print_chosen_recipes(recipes_to_preview, category, portions)
-
 
 def load_recipes(category):
     """
@@ -353,15 +367,15 @@ def validate_request(recipes_request, recipes):
         return get_recipes_to_preview(recipes)   
 
 def print_chosen_recipes(recipes, category, portions):
+    """
+    imports data and prints the recipes selected for preview
+    """
     print(f'Loading recipes...\n')
     data = SHEET.worksheet(category)
     for recipe in recipes:      
         index = recipe + 1
         recipe_data = data.row_values(index + 1)
         print_found_recipe(category, portions, recipe_data)
-
-    
-
 
 
 def main():
