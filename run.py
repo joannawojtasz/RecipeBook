@@ -58,11 +58,11 @@ def add_recipe():
     Creates new recipe
     """
     new_recipe = recipe_input()
-    valid_recipe = validate_recipe(new_recipe)
+    valid_recipe = new_recipe.validate_recipe()
     valid_recipe.recipe_print()
     if save_recipe():
-        recipe = calculate_1portion(valid_recipe)
-        save_to_spreadshit(recipe)
+        valid_recipe = valid_recipe.normalise_ingredients_per_portion()
+        valid_recipe.save_to_spreadsheet()
     else:
         show_command()
 
@@ -87,19 +87,19 @@ def recipe_input():
         if input("do you want to add another ingredient? Choose Y/N\n").lower() == 'n':
             add_ingredients = False
     print('Great! What should we do with this ingredients?\n')
-    to_do = input('Please enter the recipe.\n')
-    return  recipe(kind, portions, title, ingredients, to_do)
+    instructions = input('Please enter the instructions.\n')
+    return  Recipe(kind, portions, title, ingredients, instructions)
     
-class recipe:
+class Recipe:
     """
     Recipe class
     """
-    def __init__ (self, kind, portions, title, ingredients, to_do):
+    def __init__ (self, kind, portions, title, ingredients, instructions):
         self.kind = kind
         self.portions = portions
         self.title = title
         self.ingredients = ingredients
-        self.to_do = to_do
+        self.instructions = instructions
 
     def recipe_print(self):
         """
@@ -109,7 +109,7 @@ class recipe:
         print(f'{self.title}\n ------------------------')
         for i in range(0, len(self.ingredients)):
             print(f'{self.ingredients[i][1]}{self.ingredients[i][2]} {self.ingredients[i][0]}')
-        print(f'\n {self.to_do}')
+        print(f'\n {self.instructions}')
 
     def prepare_data(self):
         """
@@ -121,40 +121,58 @@ class recipe:
             ingredients += str(ingredient[0]) + ',' + str(ingredient[1]) + ',' + str(ingredient[2])
             ingredients += ';'
 
-        return [self.title, today, ingredients[:-1], self.to_do]
-
-def validate_recipe(recipe):
-    """
-    Validates recipe kind, portions and amount input fields.
-    Allows user to correct the errors.
-    """
-    try: 
-        if recipe.kind.lower() in ['main course', 'dessert', 'starter']:
-            pass
-        else:
-            raise ValueError
-    except ValueError:
-        print(f'Incorrect type of recipe: {recipe.kind}.')
-        recipe.kind = input('Choose correct rexipe type main course, dessert, starter:\n')
-        validate_recipe(recipe)
-
-    try:
-        int(recipe.portions)
-    except:
-        print(f'Incorrect portion number: {recipe.portions}.')
-        recipe.portions = input('Enter number of portions:\n')
-        validate_recipe(recipe)
+        return [self.title, today, ingredients[:-1], self.instructions]
     
-    try:
-        for i in range(0, len(recipe.ingredients)):
-            float(recipe.ingredients[i][1])
-    except ValueError as e:
-        print("One of the ingredients has wrong amount. Please reenter the the amounts!\n")
-        for i in range(0, len(recipe.ingredients)):
-            recipe.ingredients[i][1] = input(f'Input amount of {recipe.ingredients[i][0]} (unit: {recipe.ingredients[i][2]})\n')
-        validate_recipe(recipe)
-    
-    return recipe
+    def save_to_spreadsheet(self):
+        """
+        Saves the recipe to the relevant spreadsheet
+        """
+        print(f"Saving the recipe for {self.title}...\n")
+        data = self.prepare_data()
+        SHEET.worksheet(self.kind).append_row(data)
+        print("Recipe successfully saved\n")
+
+    def normalise_ingredients_per_portion(self):
+        """
+        Calculate the amount of ingredients per one portion
+        """
+        for i in range(0, len(self.ingredients)):
+                self.ingredients[i][1] = float(self.ingredients[i][1]) / int(self.portions)
+        self.portions = 1
+        return self
+
+    def validate_recipe(self):
+        """
+        Validates recipe kind, portions and amount input fields.
+        Allows user to correct the errors.
+        """
+        try:
+            if self.kind.lower() in ['main course', 'dessert', 'starter']:
+                pass
+            else:
+                raise ValueError
+        except ValueError:
+            print(f'Incorrect type of recipe: {self.kind}.')
+            self.kind = input('Choose correct recipe type main course, dessert, starter:\n')
+            self.validate_recipe()
+        try:
+            #Parse to int
+            int(self.portions)
+        except:
+            print(f'Incorrect portion number: {self.portions}.')
+            self.portions = input('Enter number of portions:\n')
+            self.validate_recipe()
+        ingredient_idx = 0
+        try:
+            # Check if ingredient amount is a decimal
+            for i in range(0, len(self.ingredients)):
+                ingredient_idx = i
+                float(self.ingredients[i][1])
+        except ValueError as e:
+            print(f'The amount for {self.ingredients[i][0]} (unit: {self.ingredients[i][2]}) is wrong. Please reenter the the amount!\n')
+            self.ingredients[ingredient_idx][1] = input(f'Input amount of {self.ingredients[ingredient_idx][0]} (unit: {self.ingredients[ingredient_idx][2]})\n')
+            self.validate_recipe()
+        return self
 
 def save_recipe():
     """
@@ -173,24 +191,6 @@ def save_recipe():
         print(f'Invalid input: {user_choice}. Answer Y for yes or N for no')
         save_recipe()
     return True
-
-def calculate_1portion(recipe):
-    """
-    Calculate the amount of ingredients per one portion
-    """
-    for i in range(0, len(recipe.ingredients)):
-            recipe.ingredients[i][1] = float(recipe.ingredients[i][1]) / int(recipe.portions)
-    recipe.portions = 1
-    return recipe
-
-def save_to_spreadshit(recipe):
-    """
-    Saves the recipe to the relevant spreadsheet
-    """
-    print(f"Saving the recipe for {recipe.title}...\n")
-    data = recipe.prepare_data()
-    SHEET.worksheet(recipe.kind).append_row(data)
-    print("Recipe successfully saved\n")
 
 def find_recipe():
     """
@@ -248,9 +248,9 @@ def print_found_recipe(category, portions, data):
         ingredient[1] = float(ingredient[1]) * int(portions)
     
     title = data[0]
-    to_do = data[3]
+    instructions = data[3]
     
-    recept = recipe(category, portions, title, ingredients_lst, to_do)
+    recept = recipe(category, portions, title, ingredients_lst, instructions)
     recept.recipe_print()
 
 def browse_recipes():
@@ -340,7 +340,6 @@ def main():
     """
     Run all program functions
     """
-    print("Welcome to\n")
     print(
         """
         
