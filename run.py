@@ -13,14 +13,12 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
 
-# cakes = SHEET.worksheet('cakes')
 
 def get_users_choice():
     """
     Ask user what they want to do
     """
-    print("Let me know what you want to do")
-    print("by writing add, find or browse\n")
+    print("Let me know what you want to do by typing ADD, FIND or BROWSE\n")
 
     return input('Enter your choice here: \n')
     
@@ -64,17 +62,17 @@ def recipe_input():
     """
     Collects recipe input from the user
     """
-    print('You choose to add a recipe.')
-    print("Let's start with the title\n")
-    title = input('Enter your recipes title\n')
-    print('What kind of recipe is it?')
+    print('\nYou choose to add a recipe. To create new recipe entry you need to enter its the details. Please prepares title, type of a dish, number of portions, ingredients and instructions.\n')
+    print("Let's start with the title!\n")
+    title = input("Enter your recipe's title\n")
+    print('\nWhat kind of recipe is it?')
     kind = input('Choose recipes type: main course/dessert/starter\n')
-    portions = input('How many portions is this recipe for\n')
-    print(f'Lets prepare ingredients list for {title}')
+    portions = input('\nHow many portions is this recipe for\n')
+    print(f'\nLets prepare ingredients list for {title}. Add each ingredient name, amount and unit separately.')
     add_ingredients = True
     ingredients = []
     while add_ingredients:
-        ingredient = input('Enter ingredient name\n')
+        ingredient = input('\nEnter ingredient name\n')
         amount = input('Enter the amount (use numbers)\n')
         unit = input('Enter unit: g, ml, cup, pinch, click enter if not applicable\n')
         ingredients.append([ingredient, amount, unit])
@@ -191,11 +189,11 @@ def find_recipe():
     Finds a recipe within one category
     """
     print('You choose to find a recipe.')
-    category = input('What type of recipe are you looking for? Choose category main cours, dessert, starter\n')
+    category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
     validate_category(category)    
     recipe = input('Enter name of the recipe you are looking for:\n')
     found_recipe = lookfor_recipe(recipe, category)
-    portions = input('How many portions do you want to prepare:\n')
+    portions = input('\nHow many portions do you want to prepare:\n')
     print_found_recipe(category, portions, found_recipe)
 
 def validate_category(category):
@@ -247,7 +245,6 @@ def print_found_recipe(category, portions, data):
     recept = recipe(category, portions, title, ingredients_lst, to_do)
     recept.recipe_print()
 
-
 def browse_recipes():
     """
     Displays recipes within one category
@@ -258,7 +255,35 @@ def main():
     """
     Run all program functions
     """
-    print("Welcome to Recipe Book!\n")
+    print("Welcome to\n")
+    print(
+        """
+        
+██████╗░███████╗░█████╗░██╗██████╗░███████╗  ██████╗░░█████╗░░█████╗░██╗░░██╗
+██╔══██╗██╔════╝██╔══██╗██║██╔══██╗██╔════╝  ██╔══██╗██╔══██╗██╔══██╗██║░██╔╝
+██████╔╝█████╗░░██║░░╚═╝██║██████╔╝█████╗░░  ██████╦╝██║░░██║██║░░██║█████═╝░
+██╔══██╗██╔══╝░░██║░░██╗██║██╔═══╝░██╔══╝░░  ██╔══██╗██║░░██║██║░░██║██╔═██╗░
+██║░░██║███████╗╚█████╔╝██║██║░░░░░███████╗  ██████╦╝╚█████╔╝╚█████╔╝██║░╚██╗
+╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝╚═╝░░░░░╚══════╝  ╚═════╝░░╚════╝░░╚════╝░╚═╝░░╚═╝
+        """
+    )
+    print(
+        """
+                          ( \ 
+                           \ \ 
+                     __     \ \___,.-------..__       __
+                    //\\ _,-' \ \              `'--._ //\\
+                    \\ ;'      \ \                   `: //
+                    `(          \ \                   )'
+                     :.          \ \,----,         ,;
+                      `.`--.___   (    /  ___.--','
+                        `.     ``-----'-''     ,'
+                            -.               ,-
+                               `-._______.-
+
+                            """
+    )
+
     choice = get_users_choice()
     verify_users_choice(choice)
     run_users_choice(choice.lower())
