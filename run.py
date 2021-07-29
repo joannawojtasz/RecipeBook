@@ -12,9 +12,14 @@ CREDS =Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
+COMMANDS = ['add', 'find', 'browse']
 
+def show_command():
+    choice = get_user_choice()
+    verify_user_choice(choice)
+    run_user_choice(choice.lower())
 
-def get_users_choice():
+def get_user_choice():
     """
     Ask user what they want to do
     """
@@ -22,21 +27,21 @@ def get_users_choice():
 
     return input('Enter your choice here: \n')
     
-def verify_users_choice(users_choice):
+def verify_user_choice(user_choice):
     """
     Verifies if users choice is valid
     """
     try:
-        if users_choice.lower() in ['add', 'find', 'browse']:
+        if user_choice.lower() in COMMANDS:
             pass
         else:
             raise ValueError
         
     except ValueError:
-        print(f'Invalid input: {users_choice}. Try again!\n')
-        get_users_choice()      
+        print(f'Invalid input: {user_choice}. Try again!\n')
+        get_user_choice()      
 
-def run_users_choice(choice):
+def run_user_choice(choice):
     """
     Starts functions according to users choice
     """
@@ -45,7 +50,8 @@ def run_users_choice(choice):
     elif  choice == 'find':
         find_recipe()
     elif  choice == 'browse':
-        browse_recipes() 
+        browse_recipes()  
+    show_command()
 
 def add_recipe():
     """
@@ -57,6 +63,8 @@ def add_recipe():
     if save_recipe():
         recipe = calculate_1portion(valid_recipe)
         save_to_spreadshit(recipe)
+    else:
+        show_command()
 
 def recipe_input():
     """
@@ -162,7 +170,7 @@ def save_recipe():
         else:
             raise ValueError
     except ValueError:
-        print(f'Invalid input: {users_choice}. Answer Y for yes or N for no')
+        print(f'Invalid input: {user_choice}. Answer Y for yes or N for no')
         save_recipe()
     return True
 
@@ -327,7 +335,7 @@ def validate_request(recipes_request, recipes):
     except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
-    
+
 def main():
     """
     Run all program functions
@@ -357,12 +365,8 @@ def main():
                         `.     ``-----'-''     ,'
                             -.               ,-
                                `-._______.-
-
                             """
     )
-
-    choice = get_users_choice()
-    verify_users_choice(choice)
-    run_users_choice(choice.lower())
+    show_command()
 
 main()
