@@ -250,6 +250,23 @@ def browse_recipes():
     Displays recipes within one category
     """
     print('You choose to browse recipes.')
+    category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
+    validate_category(category)
+    recipes = load_recipes(category)
+
+
+def load_recipes(category):
+    """
+    Imports data from spreadsheet according to selected category
+    """
+    print(f'Loading {category} recipes...\n')
+    data = SHEET.worksheet(category)
+    titles = data.col_values(1)
+    return(titles[1:])
+
+
+
+
 
 def main():
     """
