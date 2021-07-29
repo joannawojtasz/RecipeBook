@@ -283,10 +283,12 @@ def browse_recipes():
     """
     print('You choose to browse recipes.')
     category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
-    validate_category(category)
+    category = validate_category(category)
     recipes = load_recipes(category)
     print_recipes_list(recipes)
-    request = preview_recipes(recipes)
+    preview_recipes(recipes)
+    recipes_to_preview = get_recipes_to_preview(recipes)
+    print(f'recipes chosen {recipes_to_preview}')
 
 
 def load_recipes(category):
@@ -312,19 +314,17 @@ def preview_recipes(recipes):
     asks user if they want to preview recipes 
     request list of recipes to preview
     """
-    preview = input("Do you want to preview recipes? Answer Y/N")
+    preview = input("Do you want to preview recipes? Answer Y/N\n")
     try:
         if preview.lower() in ['y', 'yes']:
-            recipes_to_preview = get_recipes_to_preview(recipes)
-            return recipes_to_preview
-
-        elif preview.lower() in ['n', 'no']:
             pass
+        elif preview.lower() in ['n', 'no']:
+            show_command()
         else:
             raise ValueError
     except ValueError:
         print(f'Invalid input: {preview}. Answer Y for yes or N for no')
-        preview_recipes()
+        preview_recipes(recipes)
     
 def get_recipes_to_preview(recipes):
     """
@@ -332,33 +332,28 @@ def get_recipes_to_preview(recipes):
     in form of numbers
     """
     recipes_request = input('Which recipes do you want to preview? Enter numbers from the list separated by ,. Example: 1,3,5\n')
-    request_ints = []
-    if validate_request(recipes_request, recipes):
-        request_separated = recipes_request.split(",")
-        request_ints = [int(value) for value in request_separated]
-        return request_ints
-        
-    else:
-        recipes_request = []
-        get_recipes_to_preview(recipes)   
+    return validate_request(recipes_request, recipes)
+
 
 def validate_request(recipes_request, recipes):
     """
     Validates if requested recipes are given in right format
     and if they are in range for the number of recipes available
     """
-    n = len(recipes)
     try:
-        values = recipes_request.split(",")
-        for value in values:
-            if int(value) <= n:
+        request_ints = []
+        request_separated = recipes_request.split(",")
+        for value in request_separated:
+            if int(value) <= len(recipes):
                 pass
+                request_ints.append(int(value))
             else:
+                print('One of the values is out of range!')
                 raise ValueError
-        return True
-    except ValueError as e:
-        print(f"Invalid data: {e}, please try again.\n")
-        return False
+        return request_ints
+    except ValueError:
+        print(f"Invalid data: {recipes_request}, please try again.\n")
+        return get_recipes_to_preview(recipes)   
 
 def main():
     """
