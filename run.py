@@ -259,9 +259,6 @@ def look_for_recipe(recipe, category):
          find_recipe()  
     
 def print_found_recipe(category, portions, data):
-
-    print(f'{category}, {portions}, {data}')
-
     ingredients = data[2].split(";")
     ingredients_lst = []
 
@@ -288,7 +285,8 @@ def browse_recipes():
     print_recipes_list(recipes)
     preview_recipes(recipes)
     recipes_to_preview = get_recipes_to_preview(recipes)
-    print(f'recipes chosen {recipes_to_preview}')
+    portions = get_portions()
+    print_chosen_recipes(recipes_to_preview, category, portions)
 
 
 def load_recipes(category):
@@ -334,7 +332,6 @@ def get_recipes_to_preview(recipes):
     recipes_request = input('Which recipes do you want to preview? Enter numbers from the list separated by ,. Example: 1,3,5\n')
     return validate_request(recipes_request, recipes)
 
-
 def validate_request(recipes_request, recipes):
     """
     Validates if requested recipes are given in right format
@@ -354,6 +351,18 @@ def validate_request(recipes_request, recipes):
     except ValueError:
         print(f"Invalid data: {recipes_request}, please try again.\n")
         return get_recipes_to_preview(recipes)   
+
+def print_chosen_recipes(recipes, category, portions):
+    print(f'Loading recipes...\n')
+    data = SHEET.worksheet(category)
+    for recipe in recipes:      
+        index = recipe + 1
+        recipe_data = data.row_values(index + 1)
+        print_found_recipe(category, portions, recipe_data)
+
+    
+
+
 
 def main():
     """
