@@ -255,7 +255,7 @@ def browse_recipes():
     recipes = load_recipes(category)
     print_recipes_list(recipes)
     request = preview_recipes(recipes)
-    print(request)
+
 
 def load_recipes(category):
     """
@@ -327,7 +327,6 @@ def validate_request(recipes_request, recipes):
     except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
-
     
 def main():
     """
