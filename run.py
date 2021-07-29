@@ -24,7 +24,6 @@ def get_users_choice():
 
     return input('Enter your choice here: \n')
     
-
 def verify_users_choice(users_choice):
     """
     Verifies if users choice is valid
@@ -38,7 +37,6 @@ def verify_users_choice(users_choice):
     except ValueError:
         print(f'Invalid input: {users_choice}. Try again!\n')
         get_users_choice()      
-
 
 def run_users_choice(choice):
     """
@@ -61,8 +59,6 @@ def add_recipe():
     if save_recipe():
         recipe = calculate_1portion(valid_recipe)
         save_to_spreadshit(recipe)
-
-
 
 def recipe_input():
     """
@@ -88,7 +84,6 @@ def recipe_input():
     to_do = input('Please enter the recipe.\n')
     return  recipe(kind, portions, title, ingredients, to_do)
     
-
 class recipe:
     """
     Recipe class
@@ -197,6 +192,32 @@ def find_recipe():
     Finds a recipe within one category
     """
     print('You choose to find a recipe.')
+    category = input('What type of recipe are you looking for? Choose category main cours, dessert, starter\n')
+    validate_category(category)
+
+def validate_category(category):
+    """
+    Validate user category selection by user imput
+    """
+    try: 
+        if category.lower() in ['main course', 'dessert', 'starter']:
+            pass
+        else:
+            raise ValueError
+    except ValueError:
+        print(f'Incorrect type of recipe: {category}.')
+        category = input('Choose correct recipe type: main course, dessert or starter.\n')
+        validate_category(category)
+
+
+
+    # get_data(category)
+
+# def get_data(category):
+#     """
+#     Imports data from spreadsheet according to selected category
+#     """
+
 
 def browse_recipes():
     """
