@@ -39,6 +39,11 @@ Solution: The last character is removed before saving the recipe.
 Problem: 'verify_users_choice' is not defined erroe. The choice is not updated when new value is entered, as the returned is not returned to the value 
 Solution: As it is the first input, simpliest solution is to call the show_command() and restat the choice
 
+[x] Program breaks at second attempt of entering new category within find function
+
+Problem: validate_category takes new imput but does not return the value
+Solution: Return validate_category(category) from the validate_category after getting new input.
+
 ## Deployment
 
 * add requirements for Heroku

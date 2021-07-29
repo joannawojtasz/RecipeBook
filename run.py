@@ -8,7 +8,7 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
     ]
 
-CREDS =Credentials.from_service_account_file('creds.json')
+CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
@@ -19,6 +19,7 @@ def show_command():
     verify_user_choice(choice)
     run_user_choice(choice.lower())
 
+
 def get_user_choice():
     """
     Ask user what they want to do
@@ -26,7 +27,8 @@ def get_user_choice():
     print("Let me know what you want to do by typing ADD, FIND or BROWSE\n")
 
     return input('Enter your choice here: \n')
-    
+
+
 def verify_user_choice(user_choice):
     """
     Verifies if users choice is valid
@@ -41,6 +43,7 @@ def verify_user_choice(user_choice):
         print(f'Invalid input: {user_choice}. Try again!\n')
         show_command()  
 
+
 def run_user_choice(choice):
     """
     Starts functions according to users choice
@@ -52,6 +55,7 @@ def run_user_choice(choice):
     elif  choice == 'browse':
         browse_recipes()  
     show_command()
+
 
 def add_recipe():
     """
@@ -65,6 +69,7 @@ def add_recipe():
         valid_recipe.save_to_spreadsheet()
     else:
         show_command()
+
 
 def recipe_input():
     """
@@ -89,7 +94,8 @@ def recipe_input():
     print('Great! What should we do with this ingredients?\n')
     instructions = input('Please enter the instructions.\n')
     return  Recipe(kind, portions, title, ingredients, instructions)
-    
+
+
 class Recipe:
     """
     Recipe class
@@ -174,6 +180,7 @@ class Recipe:
             self.validate_recipe()
         return self
 
+
 def save_recipe():
     """
     Asks user to validate recipe
@@ -192,35 +199,32 @@ def save_recipe():
         save_recipe()
     return True
 
+
 def find_recipe():
     """
     Finds a recipe within one category
     """
     print('You choose to find a recipe.')
     category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
-    validate_category(category)    
+    valid_category = validate_category(category)
     recipe = input('Enter name of the recipe you are looking for:\n')
-    found_recipe = lookfor_recipe(recipe, category)
+    found_recipe = lookfor_recipe(recipe, valid_category)
     portions = input('\nHow many portions do you want to prepare:\n')
-    print_found_recipe(category, portions, found_recipe)
+    print_found_recipe(valid_category, portions, found_recipe)
 
 def validate_category(category):
     """
     Validate user category selection by user imput
     """
-    try: 
+    try:
         if category.lower() in ['main course', 'dessert', 'starter']:
-            pass
+            return category
         else:
             raise ValueError
     except ValueError:
         print(f'Incorrect type of recipe: {category}.')
         category = input('Choose correct recipe type: main course, dessert or starter.\n')
-        validate_category(category)
-
-
-
-    # get_data(category)
+        return validate_category(category)
 
 def lookfor_recipe(recipe, category):
     """
@@ -250,7 +254,7 @@ def print_found_recipe(category, portions, data):
     title = data[0]
     instructions = data[3]
     
-    recept = recipe(category, portions, title, ingredients_lst, instructions)
+    recept = Recipe(category, portions, title, ingredients_lst, instructions)
     recept.recipe_print()
 
 def browse_recipes():
