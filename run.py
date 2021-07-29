@@ -1,6 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from pprint import pprint
+from datetime import date
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -60,6 +60,7 @@ def add_recipe():
     valid_recipe.recipe_print()
     if save_recipe():
         recipe = calculate_1portion(valid_recipe)
+        save_to_spreadshit(recipe)
 
 
 
@@ -108,6 +109,18 @@ class recipe:
         for i in range(0, len(self.ingredients)):
             print(f'{self.ingredients[i][1]}{self.ingredients[i][2]} {self.ingredients[i][0]}')
         print(f'\n {self.to_do}')
+
+    def prepare_data(self):
+        """
+        prepare data for saving in spreadshit
+        """
+        today = date.today().strftime("%Y/%m/%d")
+        ingredients = ''
+        for ingredient in self.ingredients:
+            ingredients += str(ingredient[0]) + ',' + str(ingredient[1]) + ',' + str(ingredient[2])
+            ingredients += ';'
+
+        return [self.title, today, ingredients, self.to_do]
 
 def validate_recipe(recipe):
     """
@@ -169,6 +182,15 @@ def calculate_1portion(recipe):
     recipe.portions = 1
     return recipe
 
+def save_to_spreadshit(recipe):
+    """
+    Saves the recipe to the relevant spreadsheet
+    """
+    print(f"Saving the recipe for {recipe.title}...\n")
+    data = recipe.prepare_data()
+    print(data)
+    SHEET.worksheet(recipe.kind).append_row(data)
+    print("Recipe successfully saved\n")
 
 def find_recipe():
     """
@@ -182,9 +204,6 @@ def browse_recipes():
     """
     print('You choose to browse recipes.')
 
-# def ():
-#     """
-#     """
 def main():
     """
     Run all program functions
