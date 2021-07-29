@@ -44,6 +44,11 @@ Solution: As it is the first input, simpliest solution is to call the show_comma
 Problem: validate_category takes new imput but does not return the value
 Solution: Return validate_category(category) from the validate_category after getting new input.
 
+[x] Program breaks at second attempt of entering new recipe within find function
+
+Problem: function takes new imput but does not return the value
+Solution: The function was re-writen, get_recipe(category) was returned from the look_for_recipe after getting new input.
+
 ## Deployment
 
 * add requirements for Heroku

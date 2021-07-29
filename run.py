@@ -8,7 +8,7 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
     ]
 
-CREDS = Credentials.from_service_account_file('creds.json')
+CREDS =Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
@@ -19,7 +19,6 @@ def show_command():
     verify_user_choice(choice)
     run_user_choice(choice.lower())
 
-
 def get_user_choice():
     """
     Ask user what they want to do
@@ -27,8 +26,7 @@ def get_user_choice():
     print("Let me know what you want to do by typing ADD, FIND or BROWSE\n")
 
     return input('Enter your choice here: \n')
-
-
+    
 def verify_user_choice(user_choice):
     """
     Verifies if users choice is valid
@@ -43,7 +41,6 @@ def verify_user_choice(user_choice):
         print(f'Invalid input: {user_choice}. Try again!\n')
         show_command()  
 
-
 def run_user_choice(choice):
     """
     Starts functions according to users choice
@@ -55,7 +52,6 @@ def run_user_choice(choice):
     elif  choice == 'browse':
         browse_recipes()  
     show_command()
-
 
 def add_recipe():
     """
@@ -69,7 +65,6 @@ def add_recipe():
         valid_recipe.save_to_spreadsheet()
     else:
         show_command()
-
 
 def recipe_input():
     """
@@ -94,8 +89,7 @@ def recipe_input():
     print('Great! What should we do with this ingredients?\n')
     instructions = input('Please enter the instructions.\n')
     return  Recipe(kind, portions, title, ingredients, instructions)
-
-
+    
 class Recipe:
     """
     Recipe class
@@ -180,7 +174,6 @@ class Recipe:
             self.validate_recipe()
         return self
 
-
 def save_recipe():
     """
     Asks user to validate recipe
@@ -199,18 +192,37 @@ def save_recipe():
         save_recipe()
     return True
 
-
 def find_recipe():
     """
     Finds a recipe within one category
     """
     print('You choose to find a recipe.')
+    category = get_category() 
+    recipe = get_recipe (category)
+    portions = get_portions()
+    print_found_recipe(category, portions, recipe)
+
+def get_category():
     category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
-    valid_category = validate_category(category)
+    category = validate_category(category)
+    return category
+
+def get_recipe(category):
     recipe = input('Enter name of the recipe you are looking for:\n')
-    found_recipe = lookfor_recipe(recipe, valid_category)
+    recipe_details = look_for_recipe(recipe, category)
+    return recipe_details
+
+def get_portions():
     portions = input('\nHow many portions do you want to prepare:\n')
-    print_found_recipe(valid_category, portions, found_recipe)
+    try:
+        #Parse to int
+        int(portions)
+    except:
+        print(f'Incorrect portion number: {portions}.')
+        portions = input('Enter number of portions:\n')
+        get_portions()
+    return portions
+
 
 def validate_category(category):
     """
@@ -226,25 +238,33 @@ def validate_category(category):
         category = input('Choose correct recipe type: main course, dessert or starter.\n')
         return validate_category(category)
 
-def lookfor_recipe(recipe, category):
+def look_for_recipe(recipe, category):
     """
-    Imports data from spreadsheet according to selected category
+    Imports data from spreadsheet and checks if requested recipe exists 
+    withn choosen category
     """
-    print(f'Looking for {recipe} in {category}...\n')
-    data = SHEET.worksheet(category)
-    titles = data.col_values(1)
+    print(f'Looking for {recipe} in {category} category...\n')
     try:
-        index = titles.index(recipe)
-        print('Loading the recipe...')
-    except: 
-        print(f'There is no recipe for {recipe} in the chosen category')
-    return data.row_values(index + 1)
+        data = SHEET.worksheet(category)
+        titles = data.col_values(1)
+        try:
+            index = titles.index(recipe)
+            print('Loading the recipe...')
+            return data.row_values(index + 1)
+        except:
+            print(f'There is no recipe for {recipe} in the chosen category. try again! \n')
+            return get_recipe(category) 
+    except:
+         print(f'Incorrect category chosen!')
+         find_recipe()  
     
 def print_found_recipe(category, portions, data):
 
+    print(f'{category}, {portions}, {data}')
+
     ingredients = data[2].split(";")
     ingredients_lst = []
-    
+
     for ingredient in ingredients:
         ingredient = ingredient.split(',')
         ingredients_lst.append(ingredient)
