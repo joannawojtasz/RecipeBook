@@ -196,6 +196,8 @@ def find_recipe():
     validate_category(category)    
     recipe = input('Enter name of the recipe you are looking for:\n')
     found_recipe = lookfor_recipe(recipe, category)
+    portions = input('How many portions do you want to prepare:\n')
+    print_found_recipe(category, portions, found_recipe)
 
 def validate_category(category):
     """
@@ -227,8 +229,22 @@ def lookfor_recipe(recipe, category):
         print('Loading the recipe...')
     except: 
         print(f'There is no recipe for {recipe} in the chosen category')
-    return = data.row_values(index + 1)
+    return data.row_values(index + 1)
     
+def print_found_recipe(category, portions, data):
+
+    ingredients = data[2].split(";")
+    ingredients_lst = []
+    for ingredient in ingredients:
+        ingredient = ingredient.split(',')
+        ingredients_lst.append(ingredient)
+    ingredients = ingredients_lst.pop()
+    title = data[0]
+    to_do = data[3]
+    
+    recept = recipe(category, portions, title, ingredients_lst, to_do)
+    recept.recipe_print()
+
 
 def browse_recipes():
     """
