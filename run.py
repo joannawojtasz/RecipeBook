@@ -115,7 +115,7 @@ class recipe:
             ingredients += str(ingredient[0]) + ',' + str(ingredient[1]) + ',' + str(ingredient[2])
             ingredients += ';'
 
-        return [self.title, today, ingredients, self.to_do]
+        return [self.title, today, ingredients[:-1], self.to_do]
 
 def validate_recipe(recipe):
     """
@@ -183,7 +183,6 @@ def save_to_spreadshit(recipe):
     """
     print(f"Saving the recipe for {recipe.title}...\n")
     data = recipe.prepare_data()
-    print(data)
     SHEET.worksheet(recipe.kind).append_row(data)
     print("Recipe successfully saved\n")
 
@@ -235,10 +234,13 @@ def print_found_recipe(category, portions, data):
 
     ingredients = data[2].split(";")
     ingredients_lst = []
+    
     for ingredient in ingredients:
         ingredient = ingredient.split(',')
         ingredients_lst.append(ingredient)
-    ingredients = ingredients_lst.pop()
+    for ingredient in ingredients_lst:
+        ingredient[1] = float(ingredient[1]) * int(portions)
+    
     title = data[0]
     to_do = data[3]
     

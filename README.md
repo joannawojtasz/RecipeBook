@@ -27,6 +27,15 @@ Recipe Book is designed for both for amatour and proffessional cooks who want to
 ![Flowchart](images/RecipeBook.png)
 
 
+## Encountered bugs
+
+[x] Extra ';' character in ingredient list
+
+Problem: Empty ingredient created upon loading the recipe due to ';' at the end of ingredient list. 
+Solution: The last character is removed before saving the recipe.
+
+
+
 ## Credits 
 
 * 
