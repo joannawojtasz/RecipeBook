@@ -39,7 +39,7 @@ def verify_user_choice(user_choice):
         
     except ValueError:
         print(f'Invalid input: {user_choice}. Try again!\n')
-        get_user_choice()      
+        show_command()  
 
 def run_user_choice(choice):
     """

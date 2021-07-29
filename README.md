@@ -34,6 +34,11 @@ Recipe Book is designed for both for amatour and proffessional cooks who want to
 Problem: Empty ingredient created upon loading the recipe due to ';' at the end of ingredient list. 
 Solution: The last character is removed before saving the recipe.
 
+[x] Program breaks when entering new choice at second attempt
+
+Problem: 'verify_users_choice' is not defined erroe. The choice is not updated when new value is entered, as the returned is not returned to the value 
+Solution: As it is the first input, simpliest solution is to call the show_command() and restat the choice
+
 ## Deployment
 
 * add requirements for Heroku
