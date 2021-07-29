@@ -193,7 +193,9 @@ def find_recipe():
     """
     print('You choose to find a recipe.')
     category = input('What type of recipe are you looking for? Choose category main cours, dessert, starter\n')
-    validate_category(category)
+    validate_category(category)    
+    recipe = input('Enter name of the recipe you are looking for:\n')
+    found_recipe = lookfor_recipe(recipe, category)
 
 def validate_category(category):
     """
@@ -213,11 +215,20 @@ def validate_category(category):
 
     # get_data(category)
 
-# def get_data(category):
-#     """
-#     Imports data from spreadsheet according to selected category
-#     """
-
+def lookfor_recipe(recipe, category):
+    """
+    Imports data from spreadsheet according to selected category
+    """
+    print(f'Looking for {recipe} in {category}...\n')
+    data = SHEET.worksheet(category)
+    titles = data.col_values(1)
+    try:
+        index = titles.index(recipe)
+        print('Loading the recipe...')
+    except: 
+        print(f'There is no recipe for {recipe} in the chosen category')
+    return = data.row_values(index + 1)
+    
 
 def browse_recipes():
     """
