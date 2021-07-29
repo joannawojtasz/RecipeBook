@@ -253,7 +253,7 @@ def browse_recipes():
     category = input('\nWhat kind of recipe are you looking for? Choose category by typing: main cours, dessert or starter\n')
     validate_category(category)
     recipes = load_recipes(category)
-
+    print_recipes_list(recipes)
 
 def load_recipes(category):
     """
@@ -264,7 +264,14 @@ def load_recipes(category):
     titles = data.col_values(1)
     return(titles[1:])
 
-
+def print_recipes_list(recipes):
+    """
+    Prints list of recipes
+    """
+    i = 1
+    for recipe in recipes:
+        print(f'{i}. {recipe}')
+        i += 1
 
 
 
