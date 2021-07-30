@@ -69,11 +69,23 @@ def add_recipe():
     new_recipe = recipe_input()
     valid_recipe = new_recipe.validate_recipe()
     valid_recipe.recipe_print()
+    save_recipe(valid_recipe)
+
+def save_recipe(valid_recipe):
+    """
+    Validate saving recipe with the user
+    Call for seving the recipe to spreadsheet or going back
+    """
+    print('Do you want to save the recipe?')
     if yes_no_choice():
         valid_recipe = valid_recipe.normalise_ingredients_per_portion()
         valid_recipe.save_to_spreadsheet()
     else:
-        show_command()
+        print('Do you want to try again?')
+        if yes_no_choice():
+            add_recipe()
+        else:
+            show_command()
 
 
 def recipe_input():
@@ -86,7 +98,7 @@ def recipe_input():
           'Please prepares title, type of a dish, number of portions,',
           'ingredients and instructions.')
     print("Let's start with the title!\n")
-    title = input("Enter your recipe's title\n")
+    title = input("Enter your recipe's title\n").lower()
     print('\nWhat kind of recipe is it?')
     kind = input('Choose recipes type: main course/dessert/starter\n')
     portions = input('\nHow many portions is this recipe for\n')
@@ -151,7 +163,7 @@ class Recipe:
         for i in range(0, len(self.ingredients)):
             print(f'{self.ingredients[i][1]}{self.ingredients[i][2]}',
                   f'{self.ingredients[i][0]}')
-        print(f'\n {self.instructions} \n\n')
+        print(f'\n{self.instructions} \n\n')
 
     def prepare_data(self):
         """
@@ -291,20 +303,19 @@ def look_for_recipe(recipe, category):
     withn choosen category
     """
     print(f'Looking for {recipe} in {category} category...\n')
+    data = SHEET.worksheet(category)
+    titles = data.col_values(1)
     try:
-        data = SHEET.worksheet(category)
-        titles = data.col_values(1)
-        try:
-            index = titles.index(recipe)
-            print('\nLoading the recipe...')
-            return data.row_values(index + 1)
-        except ValueError:
-            print(f'There is no recipe for {recipe} in the chosen category.',
-                  'try again! \n')
-            return get_recipe(category)
+        index = titles.index(recipe)
+        print('\nLoading the recipe...')
+        return data.row_values(index + 1)
     except ValueError:
-        print('Incorrect category chosen!')
-        find_recipe()
+        print(f'There is no recipe for {recipe} in the chosen category.\n')
+        print('Do you want to try again?')
+        if yes_no_choice():
+            return get_recipe(category)
+        else:
+            show_command()
 
 
 def print_found_recipe(category, portions, data):
