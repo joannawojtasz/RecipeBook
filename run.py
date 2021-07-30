@@ -1,6 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import date
+from time import sleep
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -26,7 +27,7 @@ def get_user_choice():
     """
     Ask user what they want to do
     """
-    return input('/n Decide what you want to do by entering ADD, FIND or BROWSE here: \n')
+    return input('\nDecide what you want to do by entering ADD, FIND or BROWSE here: \n')
     
 def verify_user_choice(user_choice):
     """
@@ -395,9 +396,7 @@ def main():
 ██████╔╝█████╗░░██║░░╚═╝██║██████╔╝█████╗░░  ██████╦╝██║░░██║██║░░██║█████═╝░
 ██╔══██╗██╔══╝░░██║░░██╗██║██╔═══╝░██╔══╝░░  ██╔══██╗██║░░██║██║░░██║██╔═██╗░
 ██║░░██║███████╗╚█████╔╝██║██║░░░░░███████╗  ██████╦╝╚█████╔╝╚█████╔╝██║░╚██╗
-╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝╚═╝░░░░░╚══════╝  ╚═════╝░░╚════╝░░╚════╝░╚═╝░░╚═╝
-        """)
-    print("""
+╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝╚═╝░░░░░╚══════╝  ╚═════╝░░╚════╝░░╚════╝░╚═╝░░╚═╝\n
                           ( \ 
                            \ \ 
                      __     \ \___,.-------..__       __
@@ -410,8 +409,18 @@ def main():
                             -.               ,-
                                `-._______.-
                             """)
-    print("Recipe book stores your recipes and allows you to acces sthem whenever you need. Add the recipe and whenever you want to read it it will be recalculated to the number of portions you declare to be interested in. You can add new recipes, find recipe by its title or browse through the recipes of selected category. Good luck!")
+    sleep(1)
+    print('Recipe book stores your recipes and allows you to acces them whenever')
+    sleep(0.3)
+    print('you need. Add the recipe and whenever you want to read it it will be')
+    sleep(0.3)
+    print('recalculated into the number of portions you declare to be interested in.')
+    sleep(0.3)
+    print('You can add new recipes, find recipe by its title or browse through')
+    sleep(0.3)
+    print('the recipes of selected category. Good luck!')
 
+    sleep(1)
     show_command()
 
 main()
