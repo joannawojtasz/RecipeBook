@@ -100,7 +100,7 @@ def recipe_input():
     print("Let's start with the title!\n")
     title = input("Enter your recipe's title\n").lower()
     print('\nWhat kind of recipe is it?')
-    kind = input('Choose recipes type: main course/dessert/starter\n')
+    kind = input('Choose recipes type: main course/dessert/breakfast\n')
     portions = input('\nHow many portions is this recipe for\n')
     print(f'\nLets prepare ingredients list for {title}. Add each',
           'ingredient name, amount and unit separately.')
@@ -203,13 +203,13 @@ class Recipe:
         Allows user to correct the errors.
         """
         try:
-            if self.kind.lower() in ['main course', 'dessert', 'starter']:
+            if self.kind.lower() in ['main course', 'dessert', 'breakfast']:
                 pass
             else:
                 raise ValueError
         except ValueError:
             print(f'Incorrect type of recipe: {self.kind}.')
-            msg = 'Choose correct recipe type main course, dessert, starter:\n'
+            msg = 'Choose correct recipe type main course, dessert, breakfast:\n'
             self.kind = input(msg)
             self.validate_recipe()
         try:
@@ -241,7 +241,7 @@ def find_recipe():
     print('\n\n\n\nYou chose to look for a recipe!')
     print('..............................\n')
     print('What kind of recipe are you looking for? Please select one of the',
-          'categories: maine cours, dessert or starter.')
+          'categories: maine cours, dessert or breakfast.')
     category = get_category()
     recipe = get_recipe(category)
     portions = get_portions()
@@ -252,7 +252,7 @@ def get_category():
     """
     gets and verifies user input returns chosen category
     """
-    msg = '\nChoose category by typing: main cours, dessert or starter\n'
+    msg = '\nChoose category by typing: main cours, dessert or breakfast\n'
     category = input(msg)
     category = validate_category(category)
     return category
@@ -286,13 +286,13 @@ def validate_category(category):
     Validate user category selection by user imput
     """
     try:
-        if category.lower() in ['main course', 'dessert', 'starter']:
+        if category.lower() in ['main course', 'dessert', 'breakfast']:
             return category
         else:
             raise ValueError
     except ValueError:
         print(f'Incorrect type of recipe: {category}.')
-        msg = 'Choose correct recipe type: MAIN COURSE, DESSERT or STARTER\n'
+        msg = 'Choose correct recipe type: MAIN COURSE, DESSERT or breakfast\n'
         category = input(msg)
         return validate_category(category)
 
@@ -345,8 +345,8 @@ def browse_recipes():
     print('\n\n\n\nYou chose to browse recipes!')
     print('............................\n')
     print('What kind of recipe are you looking for?\nPlease select category',
-          'to browse: main course, dessert or starter')
-    msg = '\nChoose category by typing: MAIN COURSE, DESSERT or STARTER\n'
+          'to browse: main course, dessert or breakfast')
+    msg = '\nChoose category by typing: MAIN COURSE, DESSERT or breakfast\n'
     category = input(msg)
     category = validate_category(category)
     recipes = load_recipes(category)
