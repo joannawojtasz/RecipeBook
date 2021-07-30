@@ -69,7 +69,7 @@ def add_recipe():
     new_recipe = recipe_input()
     valid_recipe = new_recipe.validate_recipe()
     valid_recipe.recipe_print()
-    if save_recipe():
+    if yes_no_choice():
         valid_recipe = valid_recipe.normalise_ingredients_per_portion()
         valid_recipe.save_to_spreadsheet()
     else:
@@ -97,17 +97,35 @@ def recipe_input():
     while add_ingredients:
         ingredient = input('\nEnter ingredient name\n')
         amount = input('Enter the amount (use numbers)\n')
-        unit = input(
-        'Enter unit: g, ml, cup, pinch, click enter if not applicable\n'
-        )
+        msg = 'Enter unit: g, ml, cup, pinch, click enter if not applicable\n'
+        unit = input(msg)
         ingredients.append([ingredient, amount,
                             unit])
-        msg = "do you want to add another ingredient? Choose Y/N\n"
-        if input(msg).lower() == 'n':
+        print("Do you want to add another ingredient?")
+        if yes_no_choice():
+            pass
+        else:
             add_ingredients = False
     print('Great! What should we do with this ingredients?\n')
     instructions = input('Please enter the instructions.\n')
     return Recipe(kind, portions, title, ingredients, instructions)
+
+
+def yes_no_choice():
+    """
+    Handles Y/N input from the user
+    """
+    preview = input("\nPlease answer Y/N\n")
+    try:
+        if preview.lower() in ['y', 'yes']:
+            return True
+        elif preview.lower() in ['n', 'no']:
+            return False
+        else:
+            raise ValueError
+    except ValueError:
+        print(f'Invalid input: {preview}. Answer Y for yes or N for no') 
+        return yes_no_choice()
 
 
 class Recipe:
@@ -134,7 +152,6 @@ class Recipe:
             print(f'{self.ingredients[i][1]}{self.ingredients[i][2]}',
                   f'{self.ingredients[i][0]}')
         print(f'\n {self.instructions} \n\n')
-
 
     def prepare_data(self):
         """
@@ -185,7 +202,7 @@ class Recipe:
             self.validate_recipe()
         try:
             int(self.portions)  # Parse to int
-        except:
+        except ValueError:
             print(f'Incorrect portion number: {self.portions}.')
             self.portions = input('Enter number of portions:\n')
             self.validate_recipe()
@@ -203,26 +220,7 @@ class Recipe:
                 f'(unit: {self.ingredients[ingredient_idx][2]})\n')
             self.validate_recipe()
         return self
-
-
-def save_recipe():
-    """
-    Asks user to validate recipe
-    """
-    save = input('Do you want to save the recipe? Please answer Y/N\n')
-    try:
-        if save.lower() in ['y', 'yes']:
-            pass
-        elif save.lower() in ['n', 'no']:
-            print('Please try again!\n')
-            add_recipe()
-        else:
-            raise ValueError
-    except ValueError:
-        print('Invalid input. Answer Y for yes or N for no')
-        save_recipe()
-    return True
-
+  
 
 def find_recipe():
     """
@@ -264,7 +262,7 @@ def get_portions():
     portions = input('\nHow many portions do you want to prepare:\n')
     try:
         int(portions)  # Parse to int
-    except:
+    except ValueError:
         print(f'Incorrect portion number: {portions}.')
         portions = input('Enter number of portions:\n')
         get_portions()
@@ -300,11 +298,11 @@ def look_for_recipe(recipe, category):
             index = titles.index(recipe)
             print('\nLoading the recipe...')
             return data.row_values(index + 1)
-        except:
+        except ValueError:
             print(f'There is no recipe for {recipe} in the chosen category.',
                   'try again! \n')
             return get_recipe(category)
-    except:
+    except ValueError:
         print('Incorrect category chosen!')
         find_recipe()
 
@@ -335,17 +333,14 @@ def browse_recipes():
     """
     print('\n\n\n\nYou chose to browse recipes!')
     print('............................\n')
-    print('What kind of recipe are you looking for?\nPlease select category to',
-          'browse: main course, dessert or starter')
+    print('What kind of recipe are you looking for?\nPlease select category',
+          'to browse: main course, dessert or starter')
     msg = '\nChoose category by typing: MAIN COURSE, DESSERT or STARTER\n'
     category = input(msg)
     category = validate_category(category)
     recipes = load_recipes(category)
     print_recipes_list(recipes)
-    preview_recipes(recipes)
-    recipes_to_preview = get_recipes_to_preview(recipes)
-    portions = get_portions()
-    print_chosen_recipes(recipes_to_preview, category, portions)
+    preview_recipes(recipes, category)
 
 
 def load_recipes(category):
@@ -368,22 +363,19 @@ def print_recipes_list(recipes):
         i += 1
 
 
-def preview_recipes(recipes):
+def preview_recipes(recipes, category):
     """
     asks user if they want to preview recipes
     request list of recipes to preview
     """
-    preview = input("\n Do you want to preview recipes? Please answer Y/N\n")
-    try:
-        if preview.lower() in ['y', 'yes']:
-            pass
-        elif preview.lower() in ['n', 'no']:
-            show_command()
-        else:
-            raise ValueError
-    except ValueError:
-        print(f'Invalid input: {preview}. Answer Y for yes or N for no')
-        preview_recipes(recipes)
+    print("\nDo you want to preview recipes?")
+    if yes_no_choice():
+        pass
+    else:
+        show_command()
+    recipes_to_preview = get_recipes_to_preview(recipes)
+    portions = get_portions()
+    print_chosen_recipes(recipes_to_preview, category, portions)
 
 
 def get_recipes_to_preview(recipes):
@@ -393,7 +385,7 @@ def get_recipes_to_preview(recipes):
     """
     print('Which recipes do you want to preview?')
     print('Please choose recipe by typing the corresponding numbers.',
-    'Use following format: 1,3,5)')
+          'Use following format: 1,3,5)')
     recipes_request = input('\nEnter your choice\n')
     return validate_request(recipes_request, recipes)
 
