@@ -13,7 +13,14 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
-COMMANDS = ['add', 'find', 'browse']
+ADD_COMMAND = 'add'
+FIND_COMMAND = 'find'
+BROWSE_COMMAND = 'browse'
+COMMANDS = [ADD_COMMAND, FIND_COMMAND, BROWSE_COMMAND]
+MAIN_COURSE_CATEGORY = 'main course'
+DESSERT_CATEGORY = 'dessert'
+BREAKFAST_CATEGORY = 'breakfast'
+CATEGORIES = [MAIN_COURSE_CATEGORY, DESSERT_CATEGORY, BREAKFAST_CATEGORY]
 
 
 def show_command():
@@ -53,11 +60,11 @@ def run_user_choice(choice):
     """
     Starts functions according to users choice
     """
-    if choice == 'add':
+    if choice == ADD_COMMAND:
         add_recipe()
-    elif choice == 'find':
+    elif choice == FIND_COMMAND:
         find_recipe()
-    elif choice == 'browse':
+    elif choice == BROWSE_COMMAND:
         browse_recipes()
     show_command()
 
@@ -204,7 +211,7 @@ class Recipe:
         Allows user to correct the errors.
         """
         try:
-            if self.kind.lower() in ['main course', 'dessert', 'breakfast']:
+            if self.kind.lower() in CATEGORIES:
                 pass
             else:
                 raise ValueError
@@ -231,7 +238,8 @@ class Recipe:
             print(f'The amount for {self.ingredients[i][0]}',
                   f'(unit: {self.ingredients[i][2]}) is wrong.',
                   'Please reenter the the amount!\n')
-            m = f'Input amount of {self.ingredients[ingredient_idx][0]} (unit: {self.ingredients[ingredient_idx][2]})\n'
+            msg = f'Input amount of {self.ingredients[ingredient_idx][0]}'
+            + f' (unit: {self.ingredients[ingredient_idx][2]})\n'
             self.ingredients[ingredient_idx][1] = input(msg)            
             self.validate_recipe()
         return self
@@ -292,13 +300,14 @@ def validate_category(category):
     Validate user category selection by user imput
     """
     try:
-        if category.lower() in ['main course', 'dessert', 'breakfast']:
-            return category
+        if category.lower() in CATEGORIES:
+            return category.lower()
         else:
             raise ValueError
     except ValueError:
         print(f'Incorrect type of recipe: {category}.')
-        msg = 'Choose correct recipe type: MAIN COURSE, DESSERT or breakfast\n'
+        msg = f'Choose correct recipe type: {MAIN_COURSE_CATEGORY.lower()},'
+        + f'{DESSERT_CATEGORY.lower()} or {BREAKFAST_CATEGORY.lower()}\n'
         category = input(msg)
         return validate_category(category)
 
@@ -309,19 +318,22 @@ def look_for_recipe(recipe, category):
     withn choosen category
     """
     print(f'Looking for {recipe} in {category} category...\n')
-    data = SHEET.worksheet(category)
-    titles = data.col_values(1)
     try:
-        index = titles.index(recipe)
-        print('\nLoading the recipe...')
-        return data.row_values(index + 1)
+        data = SHEET.worksheet(category)
+        titles = data.col_values(1)
+        try:
+            index = titles.index(recipe.lower())
+            print('\nLoading the recipe...')
+            return data.row_values(index + 1)
+        except ValueError:
+            print(f'There is no recipe for {recipe} in the chosen category.\n')
+            print('Do you want to try again?')
+            if yes_no_choice():
+                return get_recipe(category)
+            else:
+                show_command()
     except ValueError:
-        print(f'There is no recipe for {recipe} in the chosen category.\n')
-        print('Do you want to try again?')
-        if yes_no_choice():
-            return get_recipe(category)
-        else:
-            show_command()
+        show_command()
 
 
 def print_found_recipe(category, portions, data):
@@ -352,8 +364,9 @@ def browse_recipes():
     print('............................\n')
     print('What kind of recipe are you looking for?\nPlease select category',
           'to browse: main course, dessert or breakfast')
-    msg = '\nChoose category by typing: MAIN COURSE, DESSERT or breakfast\n'
-    category = input(msg).lower()
+    msg = f'\nChoose category by typing: {MAIN_COURSE_CATEGORY.lower()},'
+    + f'{DESSERT_CATEGORY.lower()} or {BREAKFAST_CATEGORY.lower()}\n'
+    category = input(msg)
     category = validate_category(category)
     recipes = load_recipes(category)
     print_recipes_list(recipes)
@@ -390,12 +403,12 @@ def preview_recipes(recipes, category):
         pass
     else:
         show_command()
-    recipes_to_preview = get_recipes_to_preview(recipes)
+    recipes_indexes_to_preview = get_recipes_indexes_to_preview(recipes)
     portions = get_portions()
-    print_chosen_recipes(recipes_to_preview, category, portions)
+    print_chosen_recipes(recipes_indexes_to_preview, category, portions)
 
 
-def get_recipes_to_preview(recipes):
+def get_recipes_indexes_to_preview(recipes):
     """
     Gets user input for recipes to preview
     in form of numbers
@@ -403,40 +416,41 @@ def get_recipes_to_preview(recipes):
     print('Which recipes do you want to preview?')
     print('Please choose recipe by typing the corresponding numbers.',
           'Use following format: 1,3,5)')
-    recipes_request = input('\nEnter your choice\n')
-    return validate_request(recipes_request, recipes)
+    recipes_index_request = input('\nEnter your choice\n')
+    return validate_request(recipes_index_request, recipes)
 
 
-def validate_request(recipes_request, recipes):
+def validate_request(recipes_index_request, recipes):
     """
     Validates if requested recipes are given in right format
     and if they are in range for the number of recipes available
     """
     try:
-        request_ints = []
-        request_separated = recipes_request.split(",")
-        for value in request_separated:
+        request_indexes = []
+        recipes_indexes_request_list = recipes_index_request.split(",")
+        for value in recipes_indexes_request_list:
             if int(value) <= len(recipes):
                 pass
-                request_ints.append(int(value))
+                request_indexes.append(int(value))
             else:
                 print('One of the values is out of range!')
                 raise ValueError
-        return request_ints
+        return request_indexes
     except ValueError:
-        print(f"Invalid data: {recipes_request}, please try again.\n")
-        return get_recipes_to_preview(recipes)
+        msg = f"Invalid data: {recipes_indexes_request_list}, please try again.\n"
+        print(msg)
+        return get_recipes_indexes_to_preview(recipes)
 
 
-def print_chosen_recipes(recipes, category, portions):
+def print_chosen_recipes(recipes_indexes, category, portions):
     """
     imports data and prints the recipes selected for preview
     """
     print('\nLoading recipes...\n')
     data = SHEET.worksheet(category)
-    for recipe in recipes:
-        index = recipe + 1
-        recipe_data = data.row_values(index)
+    for recipe_index in recipes_indexes:
+        index_in_sheet = recipe_index + 1
+        recipe_data = data.row_values(index_in_sheet)
         print_found_recipe(category, portions, recipe_data)
 
 
