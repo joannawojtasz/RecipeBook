@@ -71,6 +71,7 @@ def add_recipe():
     valid_recipe.recipe_print()
     save_recipe(valid_recipe)
 
+
 def save_recipe(valid_recipe):
     """
     Validate saving recipe with the user
@@ -208,12 +209,15 @@ class Recipe:
             else:
                 raise ValueError
         except ValueError:
-            print(f'Incorrect type of recipe: {self.kind}.')
-            msg = 'Choose correct recipe type main course, dessert, breakfast:\n'
+            print(f'Incorrect type of recipe:{self.kind}.')
+            msg = 'Choose correct category: main course, dessert, breakfast:\n'
             self.kind = input(msg)
             self.validate_recipe()
         try:
-            int(self.portions)  # Parse to int
+            if int(self.portions) != 0:  # Parse to int and check value
+                pass
+            else:
+                raise ValueError
         except ValueError:
             print(f'Incorrect portion number: {self.portions}.')
             self.portions = input('Enter number of portions:\n')
@@ -227,9 +231,8 @@ class Recipe:
             print(f'The amount for {self.ingredients[i][0]}',
                   f'(unit: {self.ingredients[i][2]}) is wrong.',
                   'Please reenter the the amount!\n')
-            self.ingredients[ingredient_idx][1] = input(
-                f'Input amount of {self.ingredients[ingredient_idx][0]}',
-                f'(unit: {self.ingredients[ingredient_idx][2]})\n')
+            m = f'Input amount of {self.ingredients[ingredient_idx][0]} (unit: {self.ingredients[ingredient_idx][2]})\n'
+            self.ingredients[ingredient_idx][1] = input(msg)            
             self.validate_recipe()
         return self
   
@@ -273,7 +276,10 @@ def get_portions():
     """
     portions = input('\nHow many portions do you want to prepare:\n')
     try:
-        int(portions)  # Parse to int
+        if int(portions) != 0:  # Parse to int
+            pass
+        else:
+            raise ValueError
     except ValueError:
         print(f'Incorrect portion number: {portions}.')
         portions = input('Enter number of portions:\n')
