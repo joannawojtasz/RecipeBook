@@ -9,11 +9,12 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
     ]
 
-CREDS =Credentials.from_service_account_file('creds.json')
+CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Recipe_Book')
 COMMANDS = ['add', 'find', 'browse']
+
 
 def show_command():
     """
@@ -23,12 +24,15 @@ def show_command():
     verify_user_choice(choice)
     run_user_choice(choice.lower())
 
+
 def get_user_choice():
     """
     Ask user what they want to do
     """
-    return input('\nDecide what you want to do by entering ADD, FIND or BROWSE here: \n')
-    
+    return input('\nDecide what you want to do by entering',
+                 'ADD, FIND or BROWSE here: \n')
+
+
 def verify_user_choice(user_choice):
     """
     Verifies if users choice is valid
@@ -38,22 +42,24 @@ def verify_user_choice(user_choice):
             pass
         else:
             raise ValueError
-        
+
     except ValueError:
         print(f'Invalid input: {user_choice}. Try again!\n')
-        show_command()  
+        show_command()
+
 
 def run_user_choice(choice):
     """
     Starts functions according to users choice
     """
-    if choice == 'add':            
+    if choice == 'add':
         add_recipe()
-    elif  choice == 'find':
+    elif choice == 'find':
         find_recipe()
-    elif  choice == 'browse':
-        browse_recipes()  
+    elif choice == 'browse':
+        browse_recipes()
     show_command()
+
 
 def add_recipe():
     """
@@ -68,37 +74,45 @@ def add_recipe():
     else:
         show_command()
 
+
 def recipe_input():
     """
     Collects recipe input from the user
     """
     print('\n\n\n\nYou chose to add a recipe!')
     print('..........................\n')
-    print('To create new recipe entry you need to enter its the details. Please prepares title, type of a dish, number of portions, ingredients and instructions.')
+    print('To create new recipe entry you need to enter its the details.',
+          'Please prepares title, type of a dish, number of portions,',
+          'ingredients and instructions.')
     print("Let's start with the title!\n")
     title = input("Enter your recipe's title\n")
     print('\nWhat kind of recipe is it?')
     kind = input('Choose recipes type: main course/dessert/starter\n')
     portions = input('\nHow many portions is this recipe for\n')
-    print(f'\nLets prepare ingredients list for {title}. Add each ingredient name, amount and unit separately.')
+    print(f'\nLets prepare ingredients list for {title}. Add each',
+          'ingredient name, amount and unit separately.')
     add_ingredients = True
     ingredients = []
     while add_ingredients:
         ingredient = input('\nEnter ingredient name\n')
         amount = input('Enter the amount (use numbers)\n')
-        unit = input('Enter unit: g, ml, cup, pinch, click enter if not applicable\n')
-        ingredients.append([ingredient, amount, unit])
-        if input("do you want to add another ingredient? Choose Y/N\n").lower() == 'n':
+        unit = input('Enter unit: g, ml, cup, pinch, click enter if',
+                     'not applicable\n')
+        ingredients.append([ingredient, amount,
+                            unit])
+        if input("do you want to add another ingredient? Choose",
+                 "Y/N\n").lower() == 'n':
             add_ingredients = False
     print('Great! What should we do with this ingredients?\n')
     instructions = input('Please enter the instructions.\n')
-    return  Recipe(kind, portions, title, ingredients, instructions)
-    
+    return Recipe(kind, portions, title, ingredients, instructions)
+
+
 class Recipe:
     """
     Recipe class
     """
-    def __init__ (self, kind, portions, title, ingredients, instructions):
+    def __init__(self, kind, portions, title, ingredients, instructions):
         self.kind = kind
         self.portions = portions
         self.title = title
@@ -109,15 +123,16 @@ class Recipe:
         """
         print new recipe to the terminal
         """
-        print(f'\nYour recipe for {self.portions} portions of {self.title} ({self.kind}):\n')
-        
+        print(f'\nYour recipe for {self.portions} portions of {self.title}',
+              f'({self.kind}):\n')
+
         print('------------------------------------------------')
         print(f'\n*** {self.title.capitalize()} ***\n')
         for i in range(0, len(self.ingredients)):
-            print(f'{self.ingredients[i][1]}{self.ingredients[i][2]} {self.ingredients[i][0]}')
+            print(f'{self.ingredients[i][1]}{self.ingredients[i][2]}',
+                  f'{self.ingredients[i][0]}')
         print(f'\n {self.instructions} \n')
         print('------------------------------------------------')
-
 
     def prepare_data(self):
         """
@@ -126,11 +141,12 @@ class Recipe:
         today = date.today().strftime("%Y/%m/%d")
         ingredients = ''
         for ingredient in self.ingredients:
-            ingredients += str(ingredient[0]) + ',' + str(ingredient[1]) + ',' + str(ingredient[2])
+            ingredients += (str(ingredient[0]) + ',' + str(ingredient[1]) +
+                            ',' + str(ingredient[2]))
             ingredients += ';'
 
         return [self.title, today, ingredients[:-1], self.instructions]
-    
+
     def save_to_spreadsheet(self):
         """
         Saves the recipe to the relevant spreadsheet
@@ -145,7 +161,8 @@ class Recipe:
         Calculate the amount of ingredients per one portion
         """
         for i in range(0, len(self.ingredients)):
-                self.ingredients[i][1] = float(self.ingredients[i][1]) / int(self.portions)
+            self.ingredients[i][1] = (float(self.ingredients[i][1]) /
+                                      int(self.portions))
         self.portions = 1
         return self
 
@@ -161,26 +178,30 @@ class Recipe:
                 raise ValueError
         except ValueError:
             print(f'Incorrect type of recipe: {self.kind}.')
-            self.kind = input('Choose correct recipe type main course, dessert, starter:\n')
+            self.kind = input('Choose correct recipe type main course,',
+                              'dessert, starter:\n')
             self.validate_recipe()
         try:
-            #Parse to int
-            int(self.portions)
+            int(self.portions)  # Parse to int
         except:
             print(f'Incorrect portion number: {self.portions}.')
             self.portions = input('Enter number of portions:\n')
             self.validate_recipe()
         ingredient_idx = 0
-        try:
-            # Check if ingredient amount is a decimal
+        try:  # Check if ingredient amount is a decimal
             for i in range(0, len(self.ingredients)):
                 ingredient_idx = i
                 float(self.ingredients[i][1])
-        except ValueError as e:
-            print(f'The amount for {self.ingredients[i][0]} (unit: {self.ingredients[i][2]}) is wrong. Please reenter the the amount!\n')
-            self.ingredients[ingredient_idx][1] = input(f'Input amount of {self.ingredients[ingredient_idx][0]} (unit: {self.ingredients[ingredient_idx][2]})\n')
+        except ValueError:
+            print(f'The amount for {self.ingredients[i][0]}',
+                  f'(unit: {self.ingredients[i][2]}) is wrong.',
+                  'Please reenter the the amount!\n')
+            self.ingredients[ingredient_idx][1] = input(
+                f'Input amount of {self.ingredients[ingredient_idx][0]}',
+                f'(unit: {self.ingredients[ingredient_idx][2]})\n')
             self.validate_recipe()
         return self
+
 
 def save_recipe():
     """
@@ -196,9 +217,10 @@ def save_recipe():
         else:
             raise ValueError
     except ValueError:
-        print(f'Invalid input: {user_choice}. Answer Y for yes or N for no')
+        print('Invalid input. Answer Y for yes or N for no')
         save_recipe()
     return True
+
 
 def find_recipe():
     """
@@ -206,19 +228,23 @@ def find_recipe():
     """
     print('\n\n\n\nYou chose to look for a recipe!')
     print('..............................\n')
-    print('What kind of recipe are you looking for? Please select one of the categories: maine cours, dessert or starter.')
-    category = get_category() 
-    recipe = get_recipe (category)
+    print('What kind of recipe are you looking for? Please select one of the',
+          'categories: maine cours, dessert or starter.')
+    category = get_category()
+    recipe = get_recipe(category)
     portions = get_portions()
     print_found_recipe(category, portions, recipe)
+
 
 def get_category():
     """
     gets and verifies user input returns chosen category
     """
-    category = input('\nChoose category by typing: main cours, dessert or starter\n')
+    category = input('\nChoose category by typing: main cours, dessert or',
+                     'starter\n')
     category = validate_category(category)
     return category
+
 
 def get_recipe(category):
     """
@@ -228,19 +254,20 @@ def get_recipe(category):
     recipe_details = look_for_recipe(recipe, category)
     return recipe_details
 
+
 def get_portions():
     """
     gets and verifies user input, returns chosen number of portions
     """
     portions = input('\nHow many portions do you want to prepare:\n')
     try:
-        #Parse to int
-        int(portions)
+        int(portions)  # Parse to int
     except:
         print(f'Incorrect portion number: {portions}.')
         portions = input('Enter number of portions:\n')
         get_portions()
     return portions
+
 
 def validate_category(category):
     """
@@ -253,12 +280,14 @@ def validate_category(category):
             raise ValueError
     except ValueError:
         print(f'Incorrect type of recipe: {category}.')
-        category = input('Choose correct recipe type: MAIN COURSE, DESSERT or STARTER\n')
+        category = input('Choose correct recipe type: MAIN COURSE,',
+                         'DESSERT or STARTER\n')
         return validate_category(category)
+
 
 def look_for_recipe(recipe, category):
     """
-    Imports data from spreadsheet and checks if requested recipe exists 
+    Imports data from spreadsheet and checks if requested recipe exists
     withn choosen category
     """
     print(f'Looking for {recipe} in {category} category...\n')
@@ -270,12 +299,14 @@ def look_for_recipe(recipe, category):
             print('\nLoading the recipe...')
             return data.row_values(index + 1)
         except:
-            print(f'There is no recipe for {recipe} in the chosen category. try again! \n')
-            return get_recipe(category) 
+            print(f'There is no recipe for {recipe} in the chosen category.',
+                  'try again! \n')
+            return get_recipe(category)
     except:
-         print(f'Incorrect category chosen!')
-         find_recipe()  
-    
+        print('Incorrect category chosen!')
+        find_recipe()
+
+
 def print_found_recipe(category, portions, data):
     """
     imports data and prints the found recipe
@@ -288,12 +319,13 @@ def print_found_recipe(category, portions, data):
         ingredients_lst.append(ingredient)
     for ingredient in ingredients_lst:
         ingredient[1] = float(ingredient[1]) * int(portions)
-    
+
     title = data[0]
     instructions = data[3]
-    
-    recept = Recipe(category, portions, title, ingredients_lst, instructions)
-    recept.recipe_print()
+
+    recipe = Recipe(category, portions, title, ingredients_lst, instructions)
+    recipe.recipe_print()
+
 
 def browse_recipes():
     """
@@ -301,8 +333,10 @@ def browse_recipes():
     """
     print('\n\n\n\nYou chose to browse recipes!')
     print('............................\n')
-    print('What kind of recipe are you looking for? Please select category to browse: main course, dessert or starter')
-    category = input('\nChoose category by typing: MAIN COURSE, DESSERT or STARTER\n')
+    print('What kind of recipe are you looking for? Please select category to',
+          'browse: main course, dessert or starter')
+    category = input('\nChoose category by typing: MAIN COURSE, DESSERT or',
+                     'STARTER\n')
     category = validate_category(category)
     recipes = load_recipes(category)
     print_recipes_list(recipes)
@@ -310,6 +344,7 @@ def browse_recipes():
     recipes_to_preview = get_recipes_to_preview(recipes)
     portions = get_portions()
     print_chosen_recipes(recipes_to_preview, category, portions)
+
 
 def load_recipes(category):
     """
@@ -320,6 +355,7 @@ def load_recipes(category):
     titles = data.col_values(1)
     return(titles[1:])
 
+
 def print_recipes_list(recipes):
     """
     Prints list of recipes
@@ -329,9 +365,10 @@ def print_recipes_list(recipes):
         print(f'{i}. {recipe}')
         i += 1
 
+
 def preview_recipes(recipes):
     """
-    asks user if they want to preview recipes 
+    asks user if they want to preview recipes
     request list of recipes to preview
     """
     preview = input("\n Do you want to preview recipes? Please answer Y/N\n")
@@ -345,14 +382,18 @@ def preview_recipes(recipes):
     except ValueError:
         print(f'Invalid input: {preview}. Answer Y for yes or N for no')
         preview_recipes(recipes)
-    
+
+
 def get_recipes_to_preview(recipes):
     """
     Gets user input for recipes to preview
     in form of numbers
     """
-    recipes_request = input('Which recipes do you want to preview? Enter numbers from the list separated by ,. Example: 1,3,5\n')
+    recipes_request = input('Which recipes do you want to preview? Enter',
+                            "numbers from the list separated by ','",
+                            'Example: 1,3,5\n')
     return validate_request(recipes_request, recipes)
+
 
 def validate_request(recipes_request, recipes):
     """
@@ -372,15 +413,16 @@ def validate_request(recipes_request, recipes):
         return request_ints
     except ValueError:
         print(f"Invalid data: {recipes_request}, please try again.\n")
-        return get_recipes_to_preview(recipes)   
+        return get_recipes_to_preview(recipes)
+
 
 def print_chosen_recipes(recipes, category, portions):
     """
     imports data and prints the recipes selected for preview
     """
-    print(f'\nLoading recipes...\n')
+    print('\nLoading recipes...\n')
     data = SHEET.worksheet(category)
-    for recipe in recipes:      
+    for recipe in recipes:
         index = recipe + 1
         recipe_data = data.row_values(index)
         print_found_recipe(category, portions, recipe_data)
@@ -390,7 +432,7 @@ def main():
     """
     Run all program functions
     """
-    print("""        
+    print("""
 ██████╗░███████╗░█████╗░██╗██████╗░███████╗  ██████╗░░█████╗░░█████╗░██╗░░██╗
 ██╔══██╗██╔════╝██╔══██╗██║██╔══██╗██╔════╝  ██╔══██╗██╔══██╗██╔══██╗██║░██╔╝
 ██████╔╝█████╗░░██║░░╚═╝██║██████╔╝█████╗░░  ██████╦╝██║░░██║██║░░██║█████═╝░
@@ -398,7 +440,7 @@ def main():
 ██║░░██║███████╗╚█████╔╝██║██║░░░░░███████╗  ██████╦╝╚█████╔╝╚█████╔╝██║░╚██╗
 ╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝╚═╝░░░░░╚══════╝  ╚═════╝░░╚════╝░░╚════╝░╚═╝░░╚═╝\n
                           ( \ 
-                           \ \ 
+                           \ \  
                      __     \ \___,.-------..__       __
                     //\\ _,-' \ \              `'--._ //\\
                     \\ ;'      \ \                   `: //
@@ -410,17 +452,20 @@ def main():
                                `-._______.-
                             """)
     sleep(1)
-    print('Recipe book stores your recipes and allows you to acces them whenever')
+    print('Recipe book stores your recipes and allows you to access')
     sleep(0.3)
-    print('you need. Add the recipe and whenever you want to read it it will be')
+    print('them wheneveryou need. Add the recipe and whenever you want')
     sleep(0.3)
-    print('recalculated into the number of portions you declare to be interested in.')
+    print('to read it it will berecalculated into the number of portions')
     sleep(0.3)
-    print('You can add new recipes, find recipe by its title or browse through')
+    print('you declare to be interested in. You can add new recipes,')
     sleep(0.3)
-    print('the recipes of selected category. Good luck!')
+    print('find recipe by its title or browse through the recipes')
+    sleep(0.3)
+    print('of selected category. Good luck!')
 
     sleep(1)
     show_command()
+
 
 main()

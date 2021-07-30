@@ -23,25 +23,56 @@ Recipe Book is designed for both for amatour and proffessional cooks who want to
 * Sometimes I want to bake something but don't know precisely what that should be. I want to be able to browse some ideas within one category. 
 
 ### Design
-![Flowchart](images/RecipeBook.png)
-
 
 Recipe Book is a terminal based application and therefore has a limited design options. 
+
+
+### Flowchart
+
+![Flowchart](images/RecipeBook.png)
+
+A flowchart was created to visualize the planned functions within the aplication.
 
 ## Features
 
 * Start screen
+
+![Start screen]](images/start1.PNG)
+![Start screen cont.]](images/start2.PNG)
 A ASCII graphics showing a pot and decorative title were chosen for the front page to create positive user experiance. User is also offered a description of the aplication and guided through it by questions printed to the terminal.
 
 * Add recipe
 
+![Add recipe]](images/add.PNG)
+
+Add recipe allows adding new record to the Recipe Book. Program asks user to give the title, category, number of portions, ingredients (name, amount, unit) and instructions. The input is validated and user is asked to confirm the data before the entry is saved.
+
 * Find recipe
+
+![Find recipe]](images/find.PNG)
+
+Find recipe allows searchong through selected category and request displaying a recipe with given name. If the name is misspelled or recipe is not found user can re-enter the recipe to ook for.
 
 * Browse
 
+![Browse recipes]](images/browse.PNG)
+![Browse recipes]](images/browse2.PNG)
 
+The browse option allows to display list of recipes within a chosen category. User can choose between the recipes in the list and print them to the terminal.
 
-## Encountered bugs
+## Testing
+
+### Checking against [PEP8 requirements](http://pep8online.com/)
+
+[x] too long lines and all were resolved
+[x] trailing white spaces removed
+[] trailing whitespaces in lines 442 and 443 within ASCII graphics remained to preserve graphics
+
+### Manual testing
+
+Manual testing included entering correct and wrong values to the code to check program response. Encountered bugs listed below.
+
+#### Encountered bugs
 
 [x] Extra ';' character in ingredient list
 
