@@ -4,15 +4,15 @@ Recipe Book is an data automation aplication for amatour and proffessional cooks
 
 ## UX
 
+###  Rationale
+
+* Storing and accessing recipes is vital for work in the kitchen.
+
+* Easy scaling of the recipes according to the number of portions allows avoidingmistakes in the kitchen.
+
 ### Clients
 
 Recipe Book is designed for both for amatour and proffessional cooks who want to store and acces their recipes digitally.
-
-###  Rationale
-
-* Storing and accessing recipes is vital for work in the kitchen
-
-* Easy scaling according to the number of portions to avoid mistakes in the kitchen.
 
 ### User stories
 
@@ -22,9 +22,23 @@ Recipe Book is designed for both for amatour and proffessional cooks who want to
 
 * Sometimes I want to bake something but don't know precisely what that should be. I want to be able to browse some ideas within one category. 
 
+### Design
+![Flowchart](images/RecipeBook.png)
+
+
+Recipe Book is a terminal based application and therefore has a limited design options. 
+
 ## Features
 
-![Flowchart](images/RecipeBook.png)
+* Start screen
+A ASCII graphics showing a pot and decorative title were chosen for the front page to create positive user experiance. User is also offered a description of the aplication and guided through it by questions printed to the terminal.
+
+* Add recipe
+
+* Find recipe
+
+* Browse
+
 
 
 ## Encountered bugs
@@ -51,10 +65,23 @@ Solution: The function was re-writen, get_recipe(category) was returned from the
 
 ## Deployment
 
-* add requirements for Heroku
+The site was deployed to Heroku. The steps to deploy are as follows:
+
+1. Add requirements for Heroku in the gitpod, commit and push to github.
+2. Go to Heroku dashboard and click Add New App.
+3. Select region: Europe and clicl set up app button.
+4. Adjust settings in the settings tab:
+* Create Config Var keys with value of the content of creds.json
+* Add buildpacks by clicking on the add buildpack button and selecting heroku/python and heroku/nodejs follows by save buildpack.
+5. Go to the deploy tab. Select Github as the diploy method. Select depository RecipeBook and click serach. Connect the repositiory with heroku.
+6. Deploy manually to look through deploy logs.
+
+The live link can be found here - [Recipe Book Page](https://recipe-book-by-joanna.herokuapp.com/)
+
+The deployment of the page did not provide any errors.
 
 ## Credits 
 
-* 
+* The ascii art comes from [asciiart.eu](https://www.asciiart.eu/)
 
 
