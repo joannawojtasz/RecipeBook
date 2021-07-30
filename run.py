@@ -353,7 +353,7 @@ def browse_recipes():
     print('What kind of recipe are you looking for?\nPlease select category',
           'to browse: main course, dessert or breakfast')
     msg = '\nChoose category by typing: MAIN COURSE, DESSERT or breakfast\n'
-    category = input(msg)
+    category = input(msg).lower()
     category = validate_category(category)
     recipes = load_recipes(category)
     print_recipes_list(recipes)
