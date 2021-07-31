@@ -88,6 +88,7 @@ def save_recipe(valid_recipe):
     if yes_no_choice():
         valid_recipe = valid_recipe.normalise_ingredients_per_portion()
         valid_recipe.save_to_spreadsheet()
+        show_command()
     else:
         print('Do you want to try again?')
         if yes_no_choice():
@@ -324,6 +325,7 @@ def validate_category(category):
     """
     Validate user category selection by user imput
     """
+    msg = f'{MAIN_COURSE_CATEGORY}, {DESSERT_CATEGORY} or {BREAKFAST_CATEGORY}'
     try:
         if category.lower() in CATEGORIES:
             return category.lower()
@@ -331,9 +333,7 @@ def validate_category(category):
             raise ValueError
     except ValueError:
         print(f'Incorrect type of recipe: {category}.')
-        msg = f'Choose correct recipe type: {MAIN_COURSE_CATEGORY.lower()},'
-        + f'{DESSERT_CATEGORY.lower()} or {BREAKFAST_CATEGORY.lower()}\n'
-        category = input(msg)
+        category = input(f'\nChoose category by typing: {msg}\n')
         return validate_category(category)
 
 
@@ -389,9 +389,8 @@ def browse_recipes():
     print('............................\n')
     print('What kind of recipe are you looking for?\nPlease select category',
           'to browse: main course, dessert or breakfast')
-    msg = f'\nChoose category by typing: {MAIN_COURSE_CATEGORY.lower()},'
-    + f'{DESSERT_CATEGORY.lower()} or {BREAKFAST_CATEGORY.lower()}\n'
-    category = input(msg)
+    msg = f'{MAIN_COURSE_CATEGORY}, {DESSERT_CATEGORY} or {BREAKFAST_CATEGORY}'
+    category = input(f'\nChoose category by typing: {msg}\n')
     category = validate_category(category)
     recipes = load_recipes(category)
     print_recipes_list(recipes)
@@ -440,7 +439,7 @@ def get_recipes_indexes_to_preview(recipes):
     """
     print('Which recipes do you want to preview?')
     print('Please choose recipe by typing the corresponding numbers.',
-          'Use following format: 1,3,5)')
+          'Use following format: 1,3,5')
     recipes_index_request = input('\nEnter your choice\n')
     return validate_request(recipes_index_request, recipes)
 
@@ -462,7 +461,7 @@ def validate_request(recipes_index_request, recipes):
                 raise ValueError
         return request_indexes
     except ValueError:
-        msg = f"Invalid data: {recipes_indexes_request_list}. Try again!\n"
+        msg = f"Invalid data: {recipes_index_request}. Try again!\n"
         print(msg)
         return get_recipes_indexes_to_preview(recipes)
 

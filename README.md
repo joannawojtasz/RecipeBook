@@ -4,13 +4,11 @@ Recipe Book is an data automation application for amateur and professional cooks
 
 ![Recipe Book Mock-up](images/mockup.png)
 
-![Recipe Book life](https://recipe-book-by-joanna.herokuapp.com/)
+[Recipe Book life](https://recipe-book-by-joanna.herokuapp.com/)
 
 ## Instructions
 
 Please follow the instructions in the terminal to add recipe, find recipe by name or browse through recipes in the Recipe Book if you need an inspiration or do not remember recipe's name.
-
-## UX
 
 ###  Rationale
 
@@ -21,6 +19,8 @@ Easy scaling of the recipes according to the number of portions allows avoiding 
 ### Clients
 
 Recipe Book is designed for both amateur and professional cooks who want to store and access their recipes digitally.
+
+## UX
 
 ### User stories
 
@@ -34,13 +34,15 @@ Recipe Book is designed for both amateur and professional cooks who want to stor
 
 Recipe Book is a command-line interface application and therefore has a limited design options. 
 
+## Features
+
 ### Flowchart
 
 ![Flowchart](images/RecipeBook.png)
 
 A flowchart was created to visualize the planned functions within the application.
 
-## Features
+### Existing features 
 
 * Start screen
 
@@ -173,6 +175,7 @@ The deployment of the page did not provide any errors.
 
 ## Credits 
 
+* Project template was built by Code Institute
 * The ascii art comes from [asciiart.eu](https://www.asciiart.eu/)
 * the ascii lettering from [fsymbols.com](https://fsymbols.com/text-art/)
 
