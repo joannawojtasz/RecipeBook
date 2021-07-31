@@ -144,7 +144,7 @@ def yes_no_choice():
         else:
             raise ValueError
     except ValueError:
-        print(f'Invalid input: {preview}. Answer Y for yes or N for no') 
+        print(f'Invalid input: {preview}. Answer Y for yes or N for no')
         return yes_no_choice()
 
 
@@ -207,7 +207,9 @@ class Recipe:
 
     def validate_recipe(self):
         """
-        Validates recipe kind, portions and amount input fields.
+        Validates recipe input fields.
+        verify if title, ingredient name and instructions are not empty
+        and checks if kind, portions and amount are correct.
         Allows user to correct the errors.
         """
         try:
@@ -221,6 +223,15 @@ class Recipe:
             self.kind = input(msg)
             self.validate_recipe()
         try:
+            if self.title:
+                pass
+            else:
+                raise ValueError
+        except ValueError:
+            print('Recipe title cannot be empty!')
+            self.title = input("Enter your recipe's title\n").lower()
+            self.validate_recipe()
+        try:
             if int(self.portions) != 0:  # Parse to int and check value
                 pass
             else:
@@ -232,18 +243,32 @@ class Recipe:
         ingredient_idx = 0
         try:  # Check if ingredient amount is a decimal
             for i in range(0, len(self.ingredients)):
-                ingredient_idx = i
-                float(self.ingredients[i][1])
+                if self.ingredients[i][0]:
+                    ingredient_idx = i
+                    float(self.ingredients[i][1])
+                else:
+                    print('\n\nIngredients must have names. Try again!')
+                    add_recipe()
         except ValueError:
-            print(f'The amount for {self.ingredients[i][0]}',
+            ing_title = f'{self.ingredients[i][0]}'
+            ing_unit = f'{self.ingredients[i][2]}'
+            print(f'The amount for {ing_title}',
                   f'(unit: {self.ingredients[i][2]}) is wrong.',
                   'Please reenter the the amount!\n')
-            msg = f'Input amount of {self.ingredients[ingredient_idx][0]}'
-            + f' (unit: {self.ingredients[ingredient_idx][2]})\n'
-            self.ingredients[ingredient_idx][1] = input(msg)            
+            msg = f'The amount of {ing_title} (unit: {ing_unit})\n'
+            self.ingredients[ingredient_idx][1] = input(msg)
+            self.validate_recipe()
+        try:
+            if self.instructions:
+                pass
+            else:
+                raise ValueError
+        except ValueError:
+            print('Instructions field cannot be empty!')
+            self.instructions = input("Enter recipes instructions\n")
             self.validate_recipe()
         return self
-  
+
 
 def find_recipe():
     """
@@ -437,7 +462,7 @@ def validate_request(recipes_index_request, recipes):
                 raise ValueError
         return request_indexes
     except ValueError:
-        msg = f"Invalid data: {recipes_indexes_request_list}, please try again.\n"
+        msg = f"Invalid data: {recipes_indexes_request_list}. Try again!\n"
         print(msg)
         return get_recipes_indexes_to_preview(recipes)
 
@@ -477,20 +502,20 @@ def main():
                             -.               ,-
                                `-._______.-
                             """)
-    sleep(1)
+    sleep(0.5)
     print('Recipe book stores your recipes and allows you to access')
-    sleep(0.3)
+    sleep(0.1)
     print('them wheneveryou need. Add the recipe and whenever you want')
-    sleep(0.3)
+    sleep(0.1)
     print('to read it it will berecalculated into the number of portions')
-    sleep(0.3)
+    sleep(0.1)
     print('you declare to be interested in. You can add new recipes,')
-    sleep(0.3)
+    sleep(0.)
     print('find recipe by its title or browse through the recipes')
-    sleep(0.3)
+    sleep(0.1)
     print('of selected category. Good luck!')
 
-    sleep(1)
+    sleep(0.5)
     show_command()
 
 
