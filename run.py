@@ -316,7 +316,6 @@ def get_portions():
             raise ValueError
     except ValueError:
         print(f'Incorrect portion number: {portions}.')
-        portions = input('Enter number of portions:\n')
         get_portions()
     return portions
 

@@ -153,6 +153,10 @@ All transitions between consecutive states were tested with respect to the state
     * Problem: function takes new input but does not return the value
     * Solution: The function was re-writen, get_recipe(category) was returned from the look_for_recipe after getting new input.  
 
+[x] Breaking at wrong category  
+
+   * Problem: Application was breaking at displaying long strings after separating lines due to impossible string concentration f'' + f''
+   * Solution: Put variables in msg variable and call for it in print or input
 
 ## Deployment
 
