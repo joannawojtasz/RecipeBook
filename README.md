@@ -50,7 +50,7 @@ A flowchart was created to visualize the planned functions within the applicatio
 
 ![Start screen cont.](images/start2.PNG)
 
-A ASCII graphics showing a pot and decorative title were chosen for the front page to create positive user experiance. After a short delay user is also offered a description of the application and guided through it by questions printed to the terminal. The delay was introduced to allow user seeing whole landing page before is pushed up.
+An ASCII graphics showing a pot and decorative title were chosen for the front page to create positive user experiance. After a short delay user is also offered a description of the application and guided through it by questions printed to the terminal. The delay was introduced to allow user seeing whole landing page before is pushed up.
 
 * Add recipe
 
@@ -94,15 +94,15 @@ The class contains methods to verify the data and parse it into strings and save
 
 * It happens to me very often that I attempt to do a double portion of a recipe and in the middle of the preparation forget to double the ingredients messing up the proportions. I need an easy way to scale up my recipes.
 
-    * Program reads the recipe rescaled to according to the number of portions user declare.
+Program reads the recipe rescaled to according to the number of portions user declare.
 
 * I need to store my recipes and be able to access them without looking through many pages or a complicated search system.
 
-    * Applications offers the possibility to add a recipe as well to acces stored recipes. To read saved recipes user can search for recipe by name or browse all recipes within chosen category.
+Applications offers the possibility to add a recipe as well to acces stored recipes. To read saved recipes user can search for recipe by name or browse all recipes within chosen category.
 
 * Sometimes I want to bake something but don't know precisely what that should be. I want to be able to browse some ideas within one category. 
 
-    *  The application allows user to browse recipes by displaying list of titles of the recipes to the terminal and allowing the user to selct recipes to be loaded.
+The application allows user to browse recipes by displaying list of titles of the recipes to the terminal and allowing the user to selct recipes to be loaded.
 
 ### Validator testing [PEP8 requirements](http://pep8online.com/)
 
@@ -118,45 +118,49 @@ All transitions between consecutive states were tested with respect to the state
 [x] Dead-end end point were identified after executing selected function and when finding recipe was impossible. Problems were eliminated by returnig user to the initial choice of functions. 
 
 [x] The application was tested against possible user input:
+*  expected input
+*  different font sizes
+*  special characters
+*  empty strings
 
-    *  expected input
-    *  different font sizes
-    *  special characters
-    *  empty strings
-
-    Were missing validation was added or improved.
+Were missing validation was added or improved.
 
 [ ] Duplication of the recipes is possible. 
 
-    Removing this possibility could be beneficial for future versions. In current version oldest (top in the spreadsheet) recipe will be displayed if requested within find function.
+Removing this possibility could be beneficial for future versions. In current version oldest (top in the spreadsheet) recipe will be displayed if requested within find function.
 
 
 #### Encountered bugs
 
 [x] Extra ';' character in ingredient list
 
-    * Problem: Empty ingredient created upon loading the recipe due to ';' at the end of ingredient list. 
-    * Solution: The last character is removed before saving the recipe.
+Problem: Empty ingredient created upon loading the recipe due to ';' at the end of ingredient list. 
+
+Solution: The last character is removed before saving the recipe.
 
 [x] Program breaks when entering new choice at second attempt
 
-    * Problem: 'verify_users_choice' is not defined error. The choice is not updated when new value is entered, as the returned is not returned to the value 
-    * Solution: As it is the first input, simplest solution is to call the show_command() and restart the choice
+Problem: 'verify_users_choice' is not defined error. The choice is not updated when new value is entered, as the returned is not returned to the value 
+
+Solution: As it is the first input, simplest solution is to call the show_command() and restart the choice
 
 [x] Program breaks at second attempt of entering new category within find function
 
-    * Problem: validate_category takes new input but does not return the value
-    * Solution: Return validate_category(category) from the validate_category after getting new input.
+Problem: validate_category takes new input but does not return the value
+
+Solution: Return validate_category(category) from the validate_category after getting new input.
 
 [x] Program breaks at second attempt of entering new recipe within find function
 
-    * Problem: function takes new input but does not return the value
-    * Solution: The function was re-writen, get_recipe(category) was returned from the look_for_recipe after getting new input.  
+Problem: function takes new input but does not return the value
+
+Solution: The function was re-writen, get_recipe(category) was returned from the look_for_recipe after getting new input.  
 
 [x] Breaking at wrong category  
 
-   * Problem: Application was breaking at displaying long strings after separating lines due to impossible string concentration f'' + f''
-   * Solution: Put variables in msg variable and call for it in print or input
+Problem: Application was breaking at displaying long strings after separating lines due to impossible string concentration f'' + f''
+
+Solution: Put variables in msg variable and call for it in print or input
 
 ## Deployment
 
